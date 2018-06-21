@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from notes.models import Note, Notebook
+from notes.doa import notebooks, notes
 
 
 def logout_view(request):
@@ -24,8 +24,8 @@ def register_view(request):
 
     context = {
         'form': form,
-        'notebooks': Notebook.objects.all().order_by('id'),
-        'notes': Note.objects.all().order_by('id')
+        'notebooks': notebooks(request),
+        'notes': notes(request)
     }
     return render(request, 'register.html', context)
 
@@ -44,7 +44,7 @@ def login_view(request):
 
     context = {
         'form': form,
-        'notebooks': Notebook.objects.all().order_by('id'),
-        'notes': Note.objects.all().order_by('id')
+        'notebooks': notebooks(request),
+        'notes': notes(request)
     }
     return render(request, 'login.html', context)

@@ -4,12 +4,13 @@ from django.shortcuts import render, redirect
 
 from .models import Note, Notebook
 from .forms import NoteForm, NotebookForm
+from .doa import notebooks, notes
 
 
 def home(request):
     context = {
-        'notebooks': Notebook.objects.all().order_by('id'),
-        'notes': Note.objects.all().order_by('id')
+        'notebooks': notebooks(request),
+        'notes': notes(request)
     }
     return render(request, 'home.html', context)
 
@@ -29,8 +30,8 @@ def new_notebook(request):
 
     context = {
         'form': form,
-        'notebooks': Notebook.objects.all().order_by('id'),
-        'notes': Note.objects.all().order_by('id')
+        'notebooks': notebooks(request),
+        'notes': notes(request)
     }
     return render(request, 'new_notebook.html', context)
 
@@ -48,8 +49,8 @@ def new_note(request):
 
     context = {
         'form': form,
-        'notebooks': Notebook.objects.all().order_by('id'),
-        'notes': Note.objects.all().order_by('id')
+        'notebooks': notebooks(request),
+        'notes': notes(request)
     }
     return render(request, 'new_note.html', context)
 
@@ -70,8 +71,8 @@ def view_note(request, note_id):
 
     # Render
     context = {
-        'notebooks': Notebook.objects.all().order_by('id'),
-        'notes': Note.objects.all().order_by('id'),
+        'notebooks': notebooks(request),
+        'notes': notes(request),
         'current_note': current_note,
     }
     return render(request, 'view_note.html', context)
@@ -93,8 +94,9 @@ def view_notebook(request, notebook_id):
 
     # Render
     context = {
-        'notebooks': Notebook.objects.all().order_by('id'),
+        'notebooks': notebooks(request),
         'notes': Note.objects.filter(notebook_id=notebook_id).order_by('id'),
         'current_notebook': current_notebook
     }
     return render(request, 'view_notebook.html', context)
+

@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {{ current_note.title }}
+    Delete "{{ current_note.title }}"
 {% endblock %}
 
 {% block main_title %}
-    {{ current_note.title }}
+    Delete "{{ current_note.title }}"
 {% endblock %}
 
 {% block main_buttons %}
@@ -18,5 +18,10 @@
 {% endblock %}
 
 {% block body %}
-    {{ current_note.content }}
+    <form action="{% url 'delete-note' note_id=current_note.id %}" method="post">
+        {% csrf_token %}
+        Are you sure you want to delete this note?
+        <button type="submit" name="submit">Yes</button>
+        <button type="button" name="cancel" onclick="window.history.back();">No</button>
+    </form>
 {% endblock %}

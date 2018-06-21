@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {{ current_note.title }}
-{% endblock %}
+    Edit "{{ current_note.title }}"
+{% endblock title %}
 
 {% block main_title %}
-    {{ current_note.title }}
+    Edit "{{ current_note.title }}"
 {% endblock %}
 
 {% block main_buttons %}
@@ -18,5 +18,10 @@
 {% endblock %}
 
 {% block body %}
-    {{ current_note.content }}
+    <form action="{% url 'edit-note' note_id=current_note.id %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button name="submit">Edit</button>
+        <button type="button" name="cancel" onclick="window.history.back();">Cancel</button>
+    </form>
 {% endblock %}

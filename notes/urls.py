@@ -29,8 +29,10 @@ urlpatterns = [
     # Notes
     path('new-note/', views.new_note, name='new-note'),
     path('view-note/<int:note_id>/', views.view_note, name='view-note'),
+    path('edit-note/<int:note_id>/', views.edit_note, name='edit-note'),
+    path('delete-note/<int:note_id>/', views.delete_note, name='delete-note'),
 
     # Notebooks
     path('new-notebook/', views.new_notebook, name='new-notebook'),
-    path('view-notebook/<int:notebook_id>/', views.view_notebook, name='view-notebook'),
+    path('view-notebook/<int:notebook_id>/', views.view_notebook, name='view-notebook')
 ]

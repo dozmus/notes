@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Delete "{{ current_notebook.title }}"
+{% endblock %}
+
+{% block main_title %}
+    Delete "{{ current_notebook.title }}"
+{% endblock %}
+
+{% block main_buttons %}
+    <a href="{% url 'edit-notebook' notebook_id=current_notebook.id %}">
+        <button class="secondary-button pure-button">Edit</button>
+    </a>
+    <a href="{% url 'delete-notebook' notebook_id=current_notebook.id %}">
+        <button class="secondary-button pure-button">Delete</button>
+    </a>
+{% endblock %}
+
+{% block body %}
+    <form action="{% url 'delete-notebook' notebook_id=current_notebook.id %}" method="post">
+        {% csrf_token %}
+        Are you sure you want to delete this notebook?<br />
+        You will lose all notes in this notebook.<br />
+        <button type="submit" name="submit">Yes</button>
+        <button type="button" name="cancel" onclick="window.history.back();">No</button>
+    </form>
+{% endblock %}

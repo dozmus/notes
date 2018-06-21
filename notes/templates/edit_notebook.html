@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {{ current_notebook.title }}
+    Edit "{{ current_notebook.title }}"
 {% endblock %}
 
 {% block main_title %}
-    {{ current_notebook.title }}
+    Edit "{{ current_notebook.title }}"
 {% endblock %}
 
 {% block main_buttons %}
@@ -18,7 +18,10 @@
 {% endblock %}
 
 {% block body %}
-    <p>
-        You are now only seeing notes in this notebook.
-    </p>
+    <form action="{% url 'edit-notebook' notebook_id=current_notebook.id %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button name="submit">Edit</button>
+        <button type="button" name="cancel" onclick="window.history.back();">Cancel</button>
+    </form>
 {% endblock %}

@@ -166,3 +166,66 @@ def delete_note(request, note_id):
         'current_note': current_note
     }
     return render(request, 'delete_note.html', context)
+
+
+@login_required
+def edit_notebook(request, notebook_id):
+    # Check notebook exists
+    try:
+        current_notebook = Notebook.objects.filter(id=notebook_id).get()
+    except:
+        raise Http404('Notebook does not exist.')
+
+    # Check owner of notebook
+    note_owner = current_notebook.owner
+
+    if request.user.username != note_owner.username:
+        raise Http404('Notebook does not exist.')
+
+    # Create form
+    if request.method != 'POST':
+        form = NotebookForm(data={
+            'title': current_notebook.title
+        })
+    else:
+        form = NotebookForm(data=request.POST)
+
+        if form.is_valid():
+            current_notebook.title = form.cleaned_data['title']
+            current_notebook.save()
+            return redirect('home')
+
+    context = {
+        'form': form,
+        'notebooks': notebooks(request),
+        'notes': notes(request),
+        'current_notebook': current_notebook
+    }
+    return render(request, 'edit_notebook.html', context)
+
+
+@login_required
+def delete_notebook(request, notebook_id):
+    # Check notebook exists
+    try:
+        current_notebook = Notebook.objects.filter(id=notebook_id).get()
+    except:
+        raise Http404('Notebook does not exist.')
+
+    # Check owner of notebook
+    note_owner = current_notebook.owner
+
+    if request.user.username != note_owner.username:
+        raise Http404('Notebook does not exist.')
+
+    if request.method == 'POST':
+        current_notebook.delete()
+        return redirect('home')
+
+    # Render
+    context = {
+        'notebooks': notebooks(request),
+        'notes': notes(request),
+        'current_notebook': current_notebook
+    }
+    return render(request, 'delete_notebook.html', context)

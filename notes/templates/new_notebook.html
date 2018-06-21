@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}New Notebook{% endblock title %}
+
+{% block body %}
+    <h1>New Notebook</h1>
+    <form action="{% url 'new-notebook' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button name="submit">Create</button>
+    </form>
+{% endblock body %}

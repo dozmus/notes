@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}New Note{% endblock title %}
+
+{% block body %}
+    <h1>New Note</h1>
+    <form action="{% url 'new-note' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button name="submit">Create</button>
+    </form>
+{% endblock body %}

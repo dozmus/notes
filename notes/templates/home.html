@@ -4,7 +4,13 @@
 
 {% block body %}
     <h1>Home</h1>
-    <p>This is the home page.</p>
+    <p>
+        This is the home page.
+
+        {% if user.is_authenticated %}
+            You are logged in as {{ user.username }}.
+        {% endif %}
+    </p>
 
     <h2>Notebooks</h2>
     <ul>

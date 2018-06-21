@@ -15,27 +15,29 @@ def home(request):
 def new_notebook(request):
     if request.method != 'POST':
         form = NotebookForm()
-        context = {'form': form}
-        return render(request, 'new_notebook.html', context)
     else:
-        form = NotebookForm(request.POST)
+        form = NotebookForm(data=request.POST)
 
         if form.is_valid():
             form.save()
             return redirect('home')
+
+    context = {'form': form}
+    return render(request, 'new_notebook.html', context)
 
 
 def new_note(request):
     if request.method != 'POST':
         form = NoteForm()
-        context = {'form': form}
-        return render(request, 'new_note.html', context)
     else:
-        form = NoteForm(request.POST)
+        form = NoteForm(data=request.POST)
 
         if form.is_valid():
             form.save()
             return redirect('home')
+
+    context = {'form': form}
+    return render(request, 'new_note.html', context)
 
 
 # def delete_note(request, note_id):

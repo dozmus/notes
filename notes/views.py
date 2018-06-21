@@ -26,7 +26,11 @@ def new_notebook(request):
             notebook.save()
             return redirect('home')
 
-    context = {'form': form}
+    context = {
+        'form': form,
+        'notebooks': Notebook.objects.all().order_by('id'),
+        'notes': Note.objects.all().order_by('id')
+    }
     return render(request, 'new_notebook.html', context)
 
 
@@ -41,7 +45,11 @@ def new_note(request):
             form.save()
             return redirect('home')
 
-    context = {'form': form}
+    context = {
+        'form': form,
+        'notebooks': Notebook.objects.all().order_by('id'),
+        'notes': Note.objects.all().order_by('id')
+    }
     return render(request, 'new_note.html', context)
 
 

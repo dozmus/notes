@@ -2,22 +2,115 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+
+    {# PureCSS stylesheet #}
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+
+    {# PureCSS: E-mail sample stylesheet #}
+    {% load static %}
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="{% static '../static/css/home-ie.css' %}">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="{% static '../static/css/home.css' %}">
+    <!--<![endif]-->
 </head>
 <body>
-    <div>
-        <a href="{% url 'home' %}">Home</a>
-        <a href="{% url 'new-notebook' %}">New Notebook</a>
-        <a href="{% url 'new-note' %}">New Note</a>
+    <div id="layout" class="content pure-g">
+        {# Nav #}
+        <div id="nav" class="pure-u">
+            <a href="#" class="nav-menu-button">Menu</a>
 
-        {% if not user.is_authenticated %}
-            <a href="{% url 'users:login' %}">Log In</a>
-            <a href="{% url 'users:register' %}">Register</a>
-        {% else %}
-            <a href="{% url 'users:logout' %}">Log Out</a>
-        {% endif %}
+            <div class="nav-inner">
+                <div class="pure-menu">
+                    <ul class="pure-menu-list">
+                        <li class="pure-menu-item">
+                            <a href="{% url 'home' %}" class="pure-menu-link">Home</a>
+                        </li>
+                        <li class="pure-menu-item">
+                            <a href="{% url 'new-notebook' %}" class="pure-menu-link">New Notebook</a>
+                        </li>
+                        <li class="pure-menu-item">
+                            <a href="{% url 'new-note' %}" class="pure-menu-link">New Note</a>
+                        </li>
+
+                        {# User buttons #}
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'users:login' %}" class="pure-menu-link">Log In</a>
+                            <a href="{% url 'users:register' %}" class="pure-menu-link">Register</a>
+                        {% else %}
+                            <a href="{% url 'users:logout' %}" class="pure-menu-link">Log Out</a>
+                        {% endif %}
+
+                        {# Notebooks list #}
+                        {% if user.is_authenticated %}
+                            <li class="pure-menu-heading">Notebooks</li>
+
+                            {% for nb in notebooks %}
+                                <a href="#" class="pure-menu-link">{{ nb.title }}</a>
+                            {% empty %}
+                                <li class="pure-menu-item">None</li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        {# List #}
+        <div id="list" class="pure-u-1">
+            {% if user.is_authenticated %}
+                {% for n in notes %}
+                    <div class="email-item pure-g">
+                        <div class="pure-u-3-4">
+                            <h5 class="email-name">{{ n.notebook.title }}</h5>
+                            <h4 class="email-subject">{{ n.title }}</h4>
+                            <p class="email-desc">
+                                {{ n.content|truncatechars:50 }}
+                            </p>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="email-item pure-g">
+                        <div class="pure-u-3-4">
+                            <h5 class="email-name">You have no notes.</h5>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="email-item pure-g">
+                    <div class="pure-u-3-4">
+                        <h5 class="email-name">Please log in to create and view your notes.</h5>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        {# Main #}
+        <div id="main" class="pure-u-1">
+            <div class="email-content">
+                <div class="email-content-header pure-g">
+                    <div class="pure-u-1-2">
+                        <h1 class="email-content-title">
+                            {% block main_title %}{% endblock %}
+                        </h1>
+                        <p class="email-content-subtitle">
+                            {% block main_subtitle %}{% endblock %}
+                        </p>
+                    </div>
+
+                    <div class="email-content-controls pure-u-1-2">
+                        {% block main_buttons %}{% endblock %}
+                    </div>
+                </div>
+
+                <div class="email-content-body">
+                    {% block body %}{% endblock %}
+                </div>
+            </div>
+        </div>
     </div>
-
-    {% block body %}{% endblock body %}
 </body>
 </html>

@@ -1,12 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}Log in{% endblock title %}
+{% block title %}Log in{% endblock %}
+
+{% block main_title %}
+    Log in
+{% endblock %}
 
 {% block body %}
-    <h1>Log in</h1>
-    <form action="{% url 'users:login' %}" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-    <button name="submit">Log in</button>
-    </form>
-{% endblock body %}
+    {% if user.is_authenticated %}
+        You are already logged in as {{ user.username }}.
+    {% else %}
+        <form action="{% url 'users:login' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button name="submit">Log in</button>
+        </form>
+    {% endif %}
+{% endblock %}

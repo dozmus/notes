@@ -1,32 +1,21 @@
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock title %}
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main_title %}
+    Home
+{% endblock %}
+
+{% block main_subtitle %}
+    {% if user.is_authenticated %}
+        You are logged in as {{ user.username }}.
+    {% endif %}
+{% endblock %}
 
 {% block body %}
-    <h1>Home</h1>
     <p>
-        This is the home page.
-
-        {% if user.is_authenticated %}
-            You are logged in as {{ user.username }}.
-        {% endif %}
+        Welcome.
     </p>
-
-    <h2>Notebooks</h2>
-    <ul>
-        {% for nb in notebooks %}
-            <li>{{ nb.title }}</li>
-        {% empty %}
-            <li>There are no notebooks.</li>
-        {% endfor %}
-    </ul>
-
-    <h2>Notes</h2>
-    <ul>
-        {% for n in notes %}
-            <li>{{ n.title }}: {{ n.content }}</li>
-        {% empty %}
-            <li>There are no notes.</li>
-        {% endfor %}
-    </ul>
-{% endblock body %}
+{% endblock %}

@@ -1,12 +1,21 @@
 {% extends 'base.html' %}
 
-{% block title %}Register{% endblock title %}
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main_title %}
+    Register
+{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
-    <form action="{% url 'users:register' %}" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-    <button name="submit">Register</button>
-    </form>
-{% endblock body %}
+    {% if user.is_authenticated %}
+        You are already logged in as {{ user.username }}.
+    {% else %}
+        <form action="{% url 'users:register' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button name="submit">Register</button>
+        </form>
+    {% endif %}
+{% endblock %}

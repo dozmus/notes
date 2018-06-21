@@ -49,7 +49,9 @@
                             <li class="pure-menu-heading">Notebooks</li>
 
                             {% for nb in notebooks %}
-                                <a href="{% url 'view-notebook' notebook_id=nb.id %}" class="pure-menu-link">{{ nb.title }}</a>
+                                <a href="{% url 'view-notebook' notebook_id=nb.id %}" class="pure-menu-link">
+                                    <span class="notebook-label" style="background: {{ nb.colour }}"></span>{{ nb.title }}
+                                </a>
                             {% empty %}
                                 <li class="pure-menu-item">None</li>
                             {% endfor %}
@@ -64,9 +66,11 @@
             {% if user.is_authenticated %}
                 {% for n in notes %}
                     {% if n.id == current_note.id %}
-                    <a href="{% url 'view-note' note_id=n.id %}" class="email-item email-item-selected pure-g">
+                    <a href="{% url 'view-note' note_id=n.id %}" class="email-item email-item-selected pure-g"
+                            style="border-left: 6px solid {{ n.notebook.colour }}">
                     {% else %}
-                    <a href="{% url 'view-note' note_id=n.id %}" class="email-item pure-g">
+                    <a href="{% url 'view-note' note_id=n.id %}" class="email-item pure-g"
+                            style="border-left: 6px solid {{ n.notebook.colour }}">
                     {% endif %}
                         <div class="pure-u-3-4">
                             <h5 class="email-name">{{ n.notebook.title }}</h5>

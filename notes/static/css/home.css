@@ -108,23 +108,12 @@ a {
 .email-count {
     color: rgb(75, 113, 151);
 }
-.email-label-personal,
-.email-label-work,
-.email-label-travel {
+.notebook-label {
     width: 15px;
     height: 15px;
     display: inline-block;
     margin-right: 0.5em;
     border-radius: 3px;
-}
-.email-label-personal {
-    background: #ffc94c;
-}
-.email-label-work {
-    background: #41ccb4;
-}
-.email-label-travel {
-    background: #40c365;
 }
 
 

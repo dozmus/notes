@@ -6,7 +6,7 @@ from .models import Note, Notebook
 class NotebookForm(ModelForm):
     class Meta:
         model = Notebook
-        fields = ['title']
+        fields = ['title', 'colour']
 
 
 class NoteForm(ModelForm):

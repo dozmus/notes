@@ -164,6 +164,7 @@ a {
 .email-name,
 .email-subject {
     margin: 0;
+    color: black;
 }
 
 .email-name {
@@ -174,6 +175,7 @@ a {
 .email-desc {
     font-size: 80%;
     margin: 0.4em 0;
+    color: black;
 }
 
 .email-item-selected {

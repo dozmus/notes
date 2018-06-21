@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from .models import Note, Notebook
@@ -12,6 +13,7 @@ def home(request):
     return render(request, 'home.html', context)
 
 
+@login_required
 def new_notebook(request):
     if request.method != 'POST':
         form = NotebookForm()
@@ -26,6 +28,7 @@ def new_notebook(request):
     return render(request, 'new_notebook.html', context)
 
 
+@login_required
 def new_note(request):
     if request.method != 'POST':
         form = NoteForm()

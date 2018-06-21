@@ -122,3 +122,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'notes/templates'),)
+
+# Login URLs
+LOGIN_URL = '/users/login/'

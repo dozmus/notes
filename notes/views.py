@@ -53,25 +53,23 @@ def new_note(request):
     return render(request, 'new_note.html', context)
 
 
-# def delete_note(request, note_id):
-#     return HttpResponse('delete_note ' + str(note_id))
-#
-#
-# def delete_notebook(request, notebook_id):
-#     return HttpResponse('delete_notebook ' + str(notebook_id))
-#
-#
-# def login(request):
-#     return HttpResponse('login')
-#
-#
-# def perform_login(request):
-#     return HttpResponse('perform_login')
-#
-#
-# def logout(request):
-#     return HttpResponse('logout')
-#
-#
-# def register(request):
-#     return HttpResponse('register')
+@login_required
+def view_note(request, note_id):
+    context = {
+        'notebooks': Notebook.objects.all().order_by('id'),
+        'notes': Note.objects.all().order_by('id'),
+        'current_note': Note.objects.filter(id=note_id).get(),
+    }
+    # TODO note exists AND owner of note => else: raise 'clean' 404 error
+    return render(request, 'view_note.html', context)
+
+
+@login_required
+def view_notebook(request, notebook_id):
+    context = {
+        'notebooks': Notebook.objects.all().order_by('id'),
+        'notes': Note.objects.filter(notebook_id=notebook_id).order_by('id'),
+        'current_notebook': Notebook.objects.filter(id=notebook_id).get()
+    }
+    # TODO notebook exists AND owner of notebook => else: raise 'clean' 404 error
+    return render(request, 'view_notebook.html', context)

@@ -28,13 +28,9 @@ urlpatterns = [
 
     # Notes
     path('new-note/', views.new_note, name='new-note'),
-    # path('delete-note/<int:note_id>/', views.delete_note, name='delete-note'),
+    path('view-note/<int:note_id>/', views.view_note, name='view-note'),
+
+    # Notebooks
     path('new-notebook/', views.new_notebook, name='new-notebook'),
-    # path('delete-notebook/<int:notebook_id>/', views.delete_notebook, name='delete-notebook'),
-    #
-    # # Users
-    # path('login/', views.login, name='login'),
-    # path('perform-login/', views.perform_login, name='perform-login'),
-    # path('logout/', views.logout, name='logout'),
-    # path('register/', views.register, name='register'),
+    path('view-notebook/<int:notebook_id>/', views.view_notebook, name='view-notebook'),
 ]

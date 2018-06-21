@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ current_notebook.title }}
+{% endblock %}
+
+{% block main_title %}
+    {{ current_notebook.title }}
+{% endblock %}
+
+{% block body %}
+    <p>
+        You are now only seeing notes in this notebook.
+    </p>
+{% endblock %}

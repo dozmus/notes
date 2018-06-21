@@ -40,6 +40,7 @@ def new_notebook(request):
 def new_note(request):
     if request.method != 'POST':
         form = NoteForm()
+        form.restrict_to_user(request.user)
     else:
         form = NoteForm(data=request.POST)
 
@@ -122,6 +123,7 @@ def edit_note(request, note_id):
             'notebook': current_note.notebook,
             'content': current_note.content
         })
+        form.restrict_to_user(request.user)
     else:
         form = NoteForm(data=request.POST)
 

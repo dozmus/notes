@@ -10,6 +10,9 @@ class NotebookForm(ModelForm):
 
 
 class NoteForm(ModelForm):
+    def restrict_to_user(self, user):
+        self.fields['notebook'].queryset = Notebook.objects.filter(owner=user)
+
     class Meta:
         model = Note
         fields = ['title', 'content', 'notebook']

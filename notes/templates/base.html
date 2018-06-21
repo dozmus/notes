@@ -63,7 +63,11 @@
         <div id="list" class="pure-u-1">
             {% if user.is_authenticated %}
                 {% for n in notes %}
+                    {% if n.id == current_note.id %}
+                    <a href="{% url 'view-note' note_id=n.id %}" class="email-item email-item-selected pure-g">
+                    {% else %}
                     <a href="{% url 'view-note' note_id=n.id %}" class="email-item pure-g">
+                    {% endif %}
                         <div class="pure-u-3-4">
                             <h5 class="email-name">{{ n.notebook.title }}</h5>
                             <h4 class="email-subject">{{ n.title }}</h4>

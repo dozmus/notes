@@ -187,13 +187,15 @@ def edit_notebook(request, notebook_id):
     # Create form
     if request.method != 'POST':
         form = NotebookForm(data={
-            'title': current_notebook.title
+            'title': current_notebook.title,
+            'colour': current_notebook.colour
         })
     else:
         form = NotebookForm(data=request.POST)
 
         if form.is_valid():
             current_notebook.title = form.cleaned_data['title']
+            current_notebook.colour = form.cleaned_data['colour']
             current_notebook.save()
             return redirect('home')
 

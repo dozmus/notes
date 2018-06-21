@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render, redirect
 
 from .models import Note, Notebook
@@ -55,21 +56,45 @@ def new_note(request):
 
 @login_required
 def view_note(request, note_id):
+    # Check note exists
+    try:
+        current_note = Note.objects.filter(id=note_id).get()
+    except:
+        raise Http404('Note does not exist.')
+
+    # Check owner of note
+    note_owner = current_note.notebook.owner
+
+    if request.user.username != note_owner.username:
+        raise Http404('Note does not exist.')
+
+    # Render
     context = {
         'notebooks': Notebook.objects.all().order_by('id'),
         'notes': Note.objects.all().order_by('id'),
-        'current_note': Note.objects.filter(id=note_id).get(),
+        'current_note': current_note,
     }
-    # TODO note exists AND owner of note => else: raise 'clean' 404 error
     return render(request, 'view_note.html', context)
 
 
 @login_required
 def view_notebook(request, notebook_id):
+    # Check notebook exists
+    try:
+        current_notebook = Notebook.objects.filter(id=notebook_id).get()
+    except:
+        raise Http404('Notebook does not exist.')
+
+    # Check owner of note
+    note_owner = current_notebook.owner
+
+    if request.user.username != note_owner.username:
+        raise Http404('Notebook does not exist.')
+
+    # Render
     context = {
         'notebooks': Notebook.objects.all().order_by('id'),
         'notes': Note.objects.filter(notebook_id=notebook_id).order_by('id'),
-        'current_notebook': Notebook.objects.filter(id=notebook_id).get()
+        'current_notebook': current_notebook
     }
-    # TODO notebook exists AND owner of notebook => else: raise 'clean' 404 error
     return render(request, 'view_notebook.html', context)

@@ -18,10 +18,43 @@
 {% endblock %}
 
 {% block body %}
-    <form action="{% url 'edit-note' note_id=current_note.id %}" method="post">
+    <form class="pure-form pure-form-aligned" action="{% url 'edit-note' note_id=current_note.id %}" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button name="submit">Edit</button>
-        <button type="button" name="cancel" onclick="window.history.back();">Cancel</button>
+
+        <fieldset>
+            <div class="pure-control-group">
+                <label for="id_title">Title</label>
+                <input name="title" maxlength="100" required="" autofocus="" id="id_title" type="text"
+                       placeholder="Title" value="{{ current_note.title }}">
+                <span class="pure-form-message-inline">This is a required field.</span>
+            </div>
+
+            <div class="pure-control-group">
+                <label for="id_content">Content</label>
+                <textarea name="content" maxlength="10000" required="" id="id_content"
+                          placeholder="Content">{{ current_note.content }}</textarea>
+                <span class="pure-form-message-inline">This is a required field.</span>
+            </div>
+
+            <div class="pure-control-group">
+                <label for="id_notebook">Notebook</label>
+                <select name="notebook" required="" id="id_notebook">
+                    <option value="">---------</option>
+                    {% for nb in notebooks %}
+                        {% if nb.id == current_note.notebook_id %}
+                        <option value="{{ nb.id }}" selected="selected">{{ nb }}</option>
+                        {% else %}
+                        <option value="{{ nb.id }}">{{ nb }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <span class="pure-form-message-inline">This is a required field.</span>
+            </div>
+
+            <div class="pure-controls">
+                <button type="submit" class="pure-button pure-button-primary">Save</button>
+                <button type="button" class="pure-button pure-button-primary" onclick="window.history.back();">Cancel</button>
+            </div>
+        </fieldset>
     </form>
 {% endblock %}

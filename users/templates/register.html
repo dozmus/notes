@@ -12,10 +12,48 @@
     {% if user.is_authenticated %}
         You are already logged in as {{ user.username }}.
     {% else %}
-        <form action="{% url 'users:register' %}" method="post">
+        <form class="pure-form pure-form-aligned" action="{% url 'users:register' %}" method="post">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button name="submit">Register</button>
+
+            <fieldset>
+                <div class="pure-control-group">
+                    <label for="id_username">Username</label>
+                    <input name="username" autofocus="" maxlength="150" required="" id="id_username" type="text"
+                           placeholder="Username">
+                    <span class="pure-form-message-inline">This is a required field.</span>
+                    <p class="helptext">
+                        <ul>
+                            <li>Your username must at most contain 150 characters.</li>
+                            <li>Your password must only contain contain letters, digits, and some symbols (@, +, -, _.</li>
+                        </ul>
+                    </p>
+                </div>
+
+                <div class="pure-control-group">
+                    <label for="id_password1">Password</label>
+                    <input name="password1" required="" id="id_password1" type="password" placeholder="Password">
+                    <span class="pure-form-message-inline">This is a required field.</span>
+                    <p class="helptext">
+                        <ul>
+                            <li>Your password can not be too similar to your other personal information.</li>
+                            <li>Your password must contain at least 8 characters.</li>
+                            <li>Your password can not be a commonly used password.</li>
+                            <li>Your password can not be entirely numeric.</li>
+                        </ul>
+                    </p>
+                </div>
+
+                <div class="pure-control-group">
+                    <label for="id_password2">Confirm Password</label>
+                    <input name="password2" required="" id="id_password2" type="password" placeholder="Password">
+                    <span class="pure-form-message-inline">This is a required field.</span>
+                </div>
+
+                <div class="pure-controls">
+                    <button type="submit" class="pure-button pure-button-primary">Create</button>
+                    <button type="button" class="pure-button pure-button-primary" onclick="window.history.back();">Cancel</button>
+                </div>
+            </fieldset>
         </form>
     {% endif %}
 {% endblock %}

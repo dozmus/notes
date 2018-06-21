@@ -10,10 +10,28 @@
     {% if user.is_authenticated %}
         You are already logged in as {{ user.username }}.
     {% else %}
-        <form action="{% url 'users:login' %}" method="post">
+        <form class="pure-form pure-form-aligned" action="{% url 'users:login' %}" method="post">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button name="submit">Log in</button>
+
+            <fieldset>
+                <div class="pure-control-group">
+                    <label for="id_username">Username</label>
+                    <input name="username" autofocus="" maxlength="150" required="" id="id_username" type="text"
+                           placeholder="Username">
+                    <span class="pure-form-message-inline">This is a required field.</span>
+                </div>
+
+                <div class="pure-control-group">
+                    <label for="id_password">Password</label>
+                    <input name="password" required="" id="id_password" type="password" placeholder="Password">
+                    <span class="pure-form-message-inline">This is a required field.</span>
+                </div>
+
+                <div class="pure-controls">
+                    <button type="submit" class="pure-button pure-button-primary">Create</button>
+                    <button type="button" class="pure-button pure-button-primary" onclick="window.history.back();">Cancel</button>
+                </div>
+            </fieldset>
         </form>
     {% endif %}
 {% endblock %}

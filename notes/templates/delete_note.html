@@ -18,10 +18,16 @@
 {% endblock %}
 
 {% block body %}
-    <form action="{% url 'delete-note' note_id=current_note.id %}" method="post">
+    <form class="pure-form pure-form-aligned" action="{% url 'delete-note' note_id=current_note.id %}" method="post">
         {% csrf_token %}
-        Are you sure you want to delete this note?
-        <button type="submit" name="submit">Yes</button>
-        <button type="button" name="cancel" onclick="window.history.back();">No</button>
+
+        <fieldset>
+            <p>Are you sure you want to delete this note?</p>
+
+            <div class="pure-controls">
+                <button type="submit" class="pure-button pure-button-primary">Create</button>
+                <button type="button" class="pure-button pure-button-primary" onclick="window.history.back();">Cancel</button>
+            </div>
+        </fieldset>
     </form>
 {% endblock %}

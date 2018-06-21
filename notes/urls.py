@@ -19,12 +19,11 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-
-    # Index
+    # Home
     path('', views.home, name='home'),
 
     # Users
+    path('admin/', admin.site.urls),
     path('users/', include('users.urls', namespace='users')),
 
     # Notes

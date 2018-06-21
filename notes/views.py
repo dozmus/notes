@@ -21,7 +21,9 @@ def new_notebook(request):
         form = NotebookForm(data=request.POST)
 
         if form.is_valid():
-            form.save()
+            notebook = form.save(commit=False)
+            notebook.owner = request.user
+            notebook.save()
             return redirect('home')
 
     context = {'form': form}

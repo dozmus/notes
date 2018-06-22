@@ -10,4 +10,9 @@ A minimal note-taking web application using Django licensed under the MIT Licens
 * Search notes and notebooks
 * User accounts
 * Download notes as `.txt` or `.pdf`
+* Download notebooks
 * Mass manage notes in notebooks
+* Responsive design
+
+# Sample
+![Sample](sample.png)

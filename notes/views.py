@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render, redirect
 
-from notes.file_response_provider import note2txt_response, note2pdf_response
+from notes.file_response_provider import note2txt_response, note2pdf_response, notebook2zip_response
 from .models import Note, Notebook
 from .forms import NoteForm, NotebookForm
 from .doa import notebooks, notes, search_notes
@@ -262,7 +262,20 @@ def delete_notebook(request, notebook_id):
 
 @login_required
 def download_notebook(request, notebook_id):
-        raise Http404()
+    # Check notebook exists
+    try:
+        current_notebook = Notebook.objects.filter(id=notebook_id).get()
+    except:
+        raise Http404('Notebook does not exist.')
+
+    # Check owner of notebook
+    note_owner = current_notebook.owner
+
+    if request.user.username != note_owner.username:
+        raise Http404('Notebook does not exist.')
+
+    # Return file
+    return notebook2zip_response(current_notebook)
 
 
 @login_required

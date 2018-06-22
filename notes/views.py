@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
 from django.shortcuts import render, redirect
 
+from notes.templates.note_response_provider import note2txt_response, note2pdf_response
 from .models import Note, Notebook
 from .forms import NoteForm, NotebookForm
 from .doa import notebooks, notes, search_notes
@@ -80,7 +81,7 @@ def view_note(request, note_id):
 
 
 @login_required
-def download_note(request, note_id):
+def download_note(request, note_id, filetype):
     # Check note exists
     try:
         current_note = Note.objects.filter(id=note_id).get()
@@ -94,11 +95,12 @@ def download_note(request, note_id):
         raise Http404('Note does not exist.')
 
     # Return file
-    data = 'Title: ' + current_note.title + '\r\n\r\nContent:\r\n' + current_note.content
-    response = HttpResponse(content_type='text/plain')
-    response['Content-Disposition'] = 'attachment; filename="note-%s.txt"' % str(note_id)
-    response.write(data)
-    return response
+    if filetype == 'txt':
+        return note2txt_response(current_note)
+    elif filetype == 'pdf':
+        return note2pdf_response(request, current_note)
+    else:
+        raise Http404('Invalid filetype.')
 
 
 @login_required

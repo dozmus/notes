@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.shortcuts import render, redirect
 
-from notes.templates.note_response_provider import note2txt_response, note2pdf_response
+from notes.file_response_provider import note2txt_response, note2pdf_response
 from .models import Note, Notebook
 from .forms import NoteForm, NotebookForm
 from .doa import notebooks, notes, search_notes

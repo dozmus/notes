@@ -16,38 +16,19 @@
             {% csrf_token %}
 
             <fieldset>
-                <div class="pure-control-group">
-                    <label for="id_username">Username</label>
-                    <input name="username" autofocus="" maxlength="150" required="" id="id_username" type="text"
-                           placeholder="Username">
-                    <span class="pure-form-message-inline">This is a required field.</span>
-                    <p class="helptext">
-                        <ul>
-                            <li>Your username must at most contain 150 characters.</li>
-                            <li>Your password must only contain contain letters, digits, and some symbols (@, +, -, _.</li>
-                        </ul>
-                    </p>
-                </div>
-
-                <div class="pure-control-group">
-                    <label for="id_password1">Password</label>
-                    <input name="password1" required="" id="id_password1" type="password" placeholder="Password">
-                    <span class="pure-form-message-inline">This is a required field.</span>
-                    <p class="helptext">
-                        <ul>
-                            <li>Your password can not be too similar to your other personal information.</li>
-                            <li>Your password must contain at least 8 characters.</li>
-                            <li>Your password can not be a commonly used password.</li>
-                            <li>Your password can not be entirely numeric.</li>
-                        </ul>
-                    </p>
-                </div>
-
-                <div class="pure-control-group">
-                    <label for="id_password2">Confirm Password</label>
-                    <input name="password2" required="" id="id_password2" type="password" placeholder="Password">
-                    <span class="pure-form-message-inline">This is a required field.</span>
-                </div>
+                {% for field in form %}
+                    <div class="pure-control-group">
+                        {{ field.errors }}
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.field.required %}
+                        <span class="pure-form-message-inline">This is a required field.</span>
+                        {% endif %}
+                        {% if field.help_text %}
+                        <p class="help">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
 
                 <div class="pure-controls">
                     <button type="submit" class="pure-button pure-button-primary">Create</button>

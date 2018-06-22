@@ -23,29 +23,19 @@
         {% csrf_token %}
 
         <fieldset>
-            <div class="pure-control-group">
-                <label for="id_title">Title</label>
-                <input name="title" maxlength="100" required="" autofocus="" id="id_title" type="text"
-                       placeholder="Title" value="{{ current_notebook.title }}">
-                <span class="pure-form-message-inline">This is a required field.</span>
-            </div>
-
-            <div class="pure-control-group">
-                <label for="id_colour">Colour</label>
-                <input name="colour" maxlength="7" required="" id="id_colour" type="color"
-                       value="{{ current_notebook.colour }}">
-                <script type="text/javascript">
-                    (function($){
-                        $(document).ready(function(){
-                            $('#id_colour').each(function(i, elm){
-                                // Make sure html5 color element is not replaced
-                                if (elm.type != 'color') $(elm).colorPicker({});
-                            });
-                        });
-                    })('django' in window && django.jQuery ? django.jQuery: jQuery);
-                </script>
-                <span class="pure-form-message-inline">This is a required field.</span>
-            </div>
+            {% for field in form %}
+                <div class="pure-control-group">
+                    {{ field.errors }}
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.field.required %}
+                    <span class="pure-form-message-inline">This is a required field.</span>
+                    {% endif %}
+                    {% if field.help_text %}
+                    <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
 
             <div class="pure-controls">
                 <button type="submit" class="pure-button pure-button-primary">Save</button>

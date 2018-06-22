@@ -13,29 +13,19 @@
         {% csrf_token %}
 
         <fieldset>
-            <div class="pure-control-group">
-                <label for="id_title">Title</label>
-                <input name="title" maxlength="100" required="" autofocus="" id="id_title" type="text"
-                       placeholder="Title">
-                <span class="pure-form-message-inline">This is a required field.</span>
-            </div>
-
-            <div class="pure-control-group">
-                <label for="id_content">Content</label>
-                <textarea name="content" maxlength="10000" required="" id="id_content" placeholder="Content"></textarea>
-                <span class="pure-form-message-inline">This is a required field.</span>
-            </div>
-
-            <div class="pure-control-group">
-                <label for="id_notebook">Notebook</label>
-                <select name="notebook" required="" id="id_notebook">
-                    <option value="" selected="">---------</option>
-                    {% for nb in notebooks %}
-                        <option value="{{ nb.id }}">{{ nb }}</option>
-                    {% endfor %}
-                </select>
-                <span class="pure-form-message-inline">This is a required field.</span>
-            </div>
+            {% for field in form %}
+                <div class="pure-control-group">
+                    {{ field.errors }}
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.field.required %}
+                    <span class="pure-form-message-inline">This is a required field.</span>
+                    {% endif %}
+                    {% if field.help_text %}
+                    <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
 
             <div class="pure-controls">
                 <button type="submit" class="pure-button pure-button-primary">Create</button>

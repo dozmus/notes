@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Search "{{ query }}"
+{% endblock %}
+
+{% block main_title %}
+    Search "{{ query }}"
+{% endblock %}
+
+{% block body %}
+    <p>
+        You are now only seeing notes which match your search query of "{{ query }}".
+    </p>
+{% endblock %}

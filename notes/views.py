@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 
 from .models import Note, Notebook
 from .forms import NoteForm, NotebookForm
-from .doa import notebooks, notes
+from .doa import notebooks, notes, search_notes
 
 
 def home(request):
@@ -233,3 +233,48 @@ def delete_notebook(request, notebook_id):
         'current_notebook': current_notebook
     }
     return render(request, 'delete_notebook.html', context)
+
+
+@login_required
+def search(request):
+    if request.method != 'POST':
+        return redirect('home')
+
+    # Render
+    query = request.POST['query']
+
+    context = {
+        'notebooks': notebooks(request),
+        'notes': search_notes(request, query),
+        'query': query
+    }
+    return render(request, 'search.html', context)
+
+
+@login_required
+def search_notebook(request, notebook_id):
+    if request.method != 'POST':
+        return redirect('home')
+
+    # Check notebook exists
+    try:
+        current_notebook = Notebook.objects.filter(id=notebook_id).get()
+    except:
+        raise Http404('Notebook does not exist.')
+
+    # Check owner of notebook
+    note_owner = current_notebook.owner
+
+    if request.user.username != note_owner.username:
+        raise Http404('Notebook does not exist.')
+
+    # Render
+    query = request.POST['query']
+
+    context = {
+        'notebooks': notebooks(request),
+        'notes': search_notes(request, query, current_notebook),
+        'current_notebook': current_notebook,
+        'query': query
+    }
+    return render(request, 'search_notebook.html', context)

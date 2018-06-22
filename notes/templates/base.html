@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
 
-    {# PureCSS stylesheet #}
+    <!-- Font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- PureCSS -->
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css"
           integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
 
-    {# PureCSS: E-mail sample stylesheet #}
+    <!-- PureCSS: E-mail sample stylesheet -->
     {% load static %}
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="{% static '../static/css/home-ie.css' %}">
@@ -65,6 +68,18 @@
         {# List #}
         <div id="list" class="pure-u-1">
             {% if user.is_authenticated %}
+                {% block search %}
+                <div class="email-item email-item-selected pure-g">
+                    <form class="pure-form" action="{% url 'search-notes' %}" method="post">
+                        {% csrf_token %}
+                        <fieldset>
+                            <input type="text" placeholder="Search..." name="query" id="id_query">
+                            <button type="submit" class="pure-button"><i class="fa fa-search"></i></button>
+                        </fieldset>
+                    </form>
+                </div>
+                {% endblock %}
+
                 {% for n in notes %}
                     {% if n.id == current_note.id %}
                     <a href="{% url 'view-note' note_id=n.id %}" class="email-item email-item-selected pure-g"

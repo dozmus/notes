@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {{ current_notebook.title }}
+    Search {{ current_notebook.title }} "{{ query }}"
 {% endblock %}
 
 {% block main_title %}
-    {{ current_notebook.title }}
+    Search {{ current_notebook.title }} "{{ query }}"
 {% endblock %}
 
 {% block search %}
@@ -20,17 +20,9 @@
     </div>
 {% endblock %}
 
-{% block main_buttons %}
-    <a href="{% url 'edit-notebook' notebook_id=current_notebook.id %}">
-        <button class="secondary-button pure-button">Edit</button>
-    </a>
-    <a href="{% url 'delete-notebook' notebook_id=current_notebook.id %}">
-        <button class="secondary-button pure-button">Delete</button>
-    </a>
-{% endblock %}
-
 {% block body %}
     <p>
-        You are now only seeing notes in this notebook.
+        You are now only seeing notes within the notebook "{{ current_notebook.title }}" which match your search query
+        of "{{ query }}".
     </p>
 {% endblock %}

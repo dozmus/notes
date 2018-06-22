@@ -37,4 +37,8 @@ urlpatterns = [
     path('view-notebook/<int:notebook_id>/', views.view_notebook, name='view-notebook'),
     path('edit-notebook/<int:notebook_id>/', views.edit_notebook, name='edit-notebook'),
     path('delete-notebook/<int:notebook_id>/', views.delete_notebook, name='delete-notebook'),
+
+    # Search
+    path('search-notes/', views.search, name='search-notes'),
+    path('search-notebook/<int:notebook_id>/', views.search_notebook, name='search-notebook'),
 ]

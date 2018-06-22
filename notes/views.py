@@ -76,6 +76,7 @@ def view_note(request, note_id):
         'notebooks': notebooks(request),
         'notes': notes(request),
         'current_note': current_note,
+        'current_note_lines': current_note.content.splitlines()
     }
     return render(request, 'view_note.html', context)
 

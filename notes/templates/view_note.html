@@ -24,5 +24,7 @@
 {% endblock %}
 
 {% block body %}
-    {{ current_note.content }}
+    {% for line in current_note_lines %}
+        <p>{{ line }}</p>
+    {% endfor %}
 {% endblock %}

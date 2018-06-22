@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render, redirect
 
 from .models import Note, Notebook
@@ -77,6 +77,28 @@ def view_note(request, note_id):
         'current_note': current_note,
     }
     return render(request, 'view_note.html', context)
+
+
+@login_required
+def download_note(request, note_id):
+    # Check note exists
+    try:
+        current_note = Note.objects.filter(id=note_id).get()
+    except:
+        raise Http404('Note does not exist.')
+
+    # Check owner of note
+    note_owner = current_note.notebook.owner
+
+    if request.user.username != note_owner.username:
+        raise Http404('Note does not exist.')
+
+    # Return file
+    data = 'Title: ' + current_note.title + '\r\n\r\nContent:\r\n' + current_note.content
+    response = HttpResponse(content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename="note-%s.txt"' % str(note_id)
+    response.write(data)
+    return response
 
 
 @login_required

@@ -27,15 +27,21 @@ def note2pdf_response(request, note):
 
 
 def notebook2zip_response(notebook):
+    notes = Note.objects.filter(notebook_id=notebook.id).order_by('id')
+    filename = 'notebook-%s.zip' % notebook.title
+    return notes2zip_response(notes, filename)
+
+
+def notes2zip_response(notes, filename="notes-partial.zip"):
     # Source: https://chase-seibert.github.io/blog/2010/07/23/django-zip-files-create-dynamic-in-memory-archives-with-pythons-zipfile.html
     # Create ZIP
     in_memory = BytesIO()
     zip = ZipFile(in_memory, 'a')
 
-    for note in Note.objects.filter(notebook_id=notebook.id).order_by('id'):
-        filename = 'note-%s.txt' % str(note.id)
+    for note in notes:
+        fname = 'note-%s.txt' % str(note.id)
         data = 'Title: ' + note.title + '\r\n\r\nContent:\r\n' + note.content
-        zip.writestr(filename, data.encode('utf-8'))
+        zip.writestr(fname, data.encode('utf-8'))
 
     # Fix for Linux zip files read in Windows
     for file in zip.filelist:
@@ -45,7 +51,7 @@ def notebook2zip_response(notebook):
 
     # Create response
     response = HttpResponse(content_type="application/zip")
-    response["Content-Disposition"] = "attachment; filename=notebook-%s.zip" % str(notebook.id)
+    response["Content-Disposition"] = 'attachment; filename="%s"' % filename
 
     # Write data
     in_memory.seek(0)

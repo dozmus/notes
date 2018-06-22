@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
-from notes.file_response_provider import note2txt_response, note2pdf_response, notebook2zip_response
+from notes.file_response_provider import note2txt_response, note2pdf_response, notebook2zip_response, notes2zip_response
 from .models import Note, Notebook
-from .forms import NoteForm, NotebookForm
+from .forms import NoteForm, NotebookForm, SelectNotesForm, SelectNotebookForm
 from .doa import notebooks, notes, search_notes
 
 
@@ -29,6 +30,7 @@ def new_notebook(request):
             notebook.save()
             return redirect('home')
 
+    # Render
     context = {
         'form': form,
         'notebooks': notebooks(request),
@@ -49,6 +51,7 @@ def new_note(request):
             form.save()
             return redirect('home')
 
+    # Render
     context = {
         'form': form,
         'notebooks': notebooks(request),
@@ -59,17 +62,8 @@ def new_note(request):
 
 @login_required
 def view_note(request, note_id):
-    # Check note exists
-    try:
-        current_note = Note.objects.filter(id=note_id).get()
-    except:
-        raise Http404('Note does not exist.')
-
-    # Check owner of note
-    note_owner = current_note.notebook.owner
-
-    if request.user.username != note_owner.username:
-        raise Http404('Note does not exist.')
+    # Validate note
+    current_note = validate_ownership_note(request, note_id)
 
     # Render
     context = {
@@ -83,17 +77,8 @@ def view_note(request, note_id):
 
 @login_required
 def download_note(request, note_id, filetype):
-    # Check note exists
-    try:
-        current_note = Note.objects.filter(id=note_id).get()
-    except:
-        raise Http404('Note does not exist.')
-
-    # Check owner of note
-    note_owner = current_note.notebook.owner
-
-    if request.user.username != note_owner.username:
-        raise Http404('Note does not exist.')
+    # Validate note
+    current_note = validate_ownership_note(request, note_id)
 
     # Return file
     if filetype == 'txt':
@@ -105,23 +90,93 @@ def download_note(request, note_id, filetype):
 
 
 @login_required
-def view_notebook(request, notebook_id):
-    # Check notebook exists
-    try:
-        current_notebook = Notebook.objects.filter(id=notebook_id).get()
-    except:
-        raise Http404('Notebook does not exist.')
+def move_notes(request, note_ids):
+    # Validate notes
+    note_id_array = note_ids.split(',')
+    notes = validate_ownership_notes(request, note_id_array)
 
-    # Check owner of notebook
-    note_owner = current_notebook.owner
+    # Create form
+    if request.method != 'POST':
+        form = SelectNotebookForm()
+        form.restrict_to_user(request.user)
+    else:
+        form = SelectNotebookForm(data=request.POST)
 
-    if request.user.username != note_owner.username:
-        raise Http404('Notebook does not exist.')
+        if form.is_valid():
+            for note in notes:
+                note.notebook = form.cleaned_data['notebook']
+                note.save()
+            return redirect('home')
+
+    # Render
+    context = {
+        'form': form,
+        'notebooks': notebooks(request),
+        'notes': notes,
+        'current_note_ids': note_ids
+    }
+    return render(request, 'move_notes.html', context)
+
+
+@login_required
+def delete_notes(request, note_ids):
+    # Validate notes
+    note_id_array = note_ids.split(',')
+    notes = validate_ownership_notes(request, note_id_array)
+
+    if request.method == 'POST':
+        for note in notes:
+            note.delete()
+        return redirect('home')
 
     # Render
     context = {
         'notebooks': notebooks(request),
-        'notes': Note.objects.filter(notebook_id=notebook_id).order_by('id'),
+        'notes': notes,
+        'current_note_ids': note_ids
+    }
+    return render(request, 'delete_notes.html', context)
+
+
+@login_required
+def view_notebook(request, notebook_id):
+    # Validate notebook
+    current_notebook = validate_ownership_notebook(request, notebook_id)
+
+    # Create form
+    notes = Note.objects.filter(notebook_id=notebook_id).order_by('id')
+
+    if request.method != 'POST':
+        form = SelectNotesForm()
+        form.set_choices(notes)
+    else:
+        form = SelectNotesForm(data=request.POST)
+        form.set_choices(notes)
+
+        if form.is_valid():
+            # Collect valid nodes
+            valid_notes = validate_ownership_notes(request, form.cleaned_data['picked'])
+
+            if len(valid_notes) > 0:
+                # Download
+                if 'download' in request.POST:
+                    return notes2zip_response(valid_notes, 'notes-%s-partial' % current_notebook.title)
+
+                # Move
+                if 'move' in request.POST:
+                    note_ids = ','.join([str(note.id) for note in valid_notes])
+                    return HttpResponseRedirect(reverse('move-notes', kwargs={'note_ids': note_ids}))
+
+                # Delete
+                if 'delete' in request.POST:
+                    note_ids = ','.join([str(note.id) for note in valid_notes])
+                    return HttpResponseRedirect(reverse('delete-notes', kwargs={'note_ids': note_ids}))
+
+    # Render
+    context = {
+        'form': form,
+        'notebooks': notebooks(request),
+        'notes': notes,
         'current_notebook': current_notebook
     }
     return render(request, 'view_notebook.html', context)
@@ -129,17 +184,8 @@ def view_notebook(request, notebook_id):
 
 @login_required
 def edit_note(request, note_id):
-    # Check note exists
-    try:
-        current_note = Note.objects.filter(id=note_id).get()
-    except:
-        raise Http404('Note does not exist.')
-
-    # Check owner of note
-    note_owner = current_note.notebook.owner
-
-    if request.user.username != note_owner.username:
-        raise Http404('Note does not exist.')
+    # Validate note
+    current_note = validate_ownership_note(request, note_id)
 
     # Create form
     if request.method != 'POST':
@@ -159,6 +205,7 @@ def edit_note(request, note_id):
             current_note.save()
             return redirect('home')
 
+    # Render
     context = {
         'form': form,
         'notebooks': notebooks(request),
@@ -170,17 +217,8 @@ def edit_note(request, note_id):
 
 @login_required
 def delete_note(request, note_id):
-    # Check note exists
-    try:
-        current_note = Note.objects.filter(id=note_id).get()
-    except:
-        raise Http404('Note does not exist.')
-
-    # Check owner of note
-    note_owner = current_note.notebook.owner
-
-    if request.user.username != note_owner.username:
-        raise Http404('Note does not exist.')
+    # Validate note
+    current_note = validate_ownership_note(request, note_id)
 
     if request.method == 'POST':
         current_note.delete()
@@ -197,17 +235,8 @@ def delete_note(request, note_id):
 
 @login_required
 def edit_notebook(request, notebook_id):
-    # Check notebook exists
-    try:
-        current_notebook = Notebook.objects.filter(id=notebook_id).get()
-    except:
-        raise Http404('Notebook does not exist.')
-
-    # Check owner of notebook
-    note_owner = current_notebook.owner
-
-    if request.user.username != note_owner.username:
-        raise Http404('Notebook does not exist.')
+    # Validate notebook
+    current_notebook = validate_ownership_notebook(request, notebook_id)
 
     # Create form
     if request.method != 'POST':
@@ -224,6 +253,7 @@ def edit_notebook(request, notebook_id):
             current_notebook.save()
             return redirect('home')
 
+    # Render
     context = {
         'form': form,
         'notebooks': notebooks(request),
@@ -235,17 +265,8 @@ def edit_notebook(request, notebook_id):
 
 @login_required
 def delete_notebook(request, notebook_id):
-    # Check notebook exists
-    try:
-        current_notebook = Notebook.objects.filter(id=notebook_id).get()
-    except:
-        raise Http404('Notebook does not exist.')
-
-    # Check owner of notebook
-    note_owner = current_notebook.owner
-
-    if request.user.username != note_owner.username:
-        raise Http404('Notebook does not exist.')
+    # Validate notebook
+    current_notebook = validate_ownership_notebook(request, notebook_id)
 
     if request.method == 'POST':
         current_notebook.delete()
@@ -262,17 +283,8 @@ def delete_notebook(request, notebook_id):
 
 @login_required
 def download_notebook(request, notebook_id):
-    # Check notebook exists
-    try:
-        current_notebook = Notebook.objects.filter(id=notebook_id).get()
-    except:
-        raise Http404('Notebook does not exist.')
-
-    # Check owner of notebook
-    note_owner = current_notebook.owner
-
-    if request.user.username != note_owner.username:
-        raise Http404('Notebook does not exist.')
+    # Validate notebook
+    current_notebook = validate_ownership_notebook(request, notebook_id)
 
     # Return file
     return notebook2zip_response(current_notebook)
@@ -299,17 +311,8 @@ def search_notebook(request, notebook_id):
     if request.method != 'POST':
         return redirect('home')
 
-    # Check notebook exists
-    try:
-        current_notebook = Notebook.objects.filter(id=notebook_id).get()
-    except:
-        raise Http404('Notebook does not exist.')
-
-    # Check owner of notebook
-    note_owner = current_notebook.owner
-
-    if request.user.username != note_owner.username:
-        raise Http404('Notebook does not exist.')
+    # Validate notebook
+    current_notebook = validate_ownership_notebook(request, notebook_id)
 
     # Render
     query = request.POST['query']
@@ -321,3 +324,43 @@ def search_notebook(request, notebook_id):
         'query': query
     }
     return render(request, 'search_notebook.html', context)
+
+
+def validate_ownership_notebook(request, notebook_id):
+    # Check notebook exists
+    try:
+        notebook = Notebook.objects.filter(id=notebook_id).get()
+    except:
+        raise Http404('Notebook does not exist.')
+
+    # Check owner of notebook
+    note_owner = notebook.owner
+
+    if request.user.username != note_owner.username:
+        raise Http404('Notebook does not exist.')
+    return notebook
+
+
+def validate_ownership_note(request, note_id):
+    # Check note exists
+    try:
+        note = Note.objects.filter(id=note_id).get()
+    except:
+        raise Http404('Note does not exist.')
+
+    # Check owner of note
+    note_owner = note.notebook.owner
+
+    if request.user.username != note_owner.username:
+        raise Http404('Note does not exist.')
+    return note
+
+
+def validate_ownership_notes(request, note_ids):
+    # Collect valid nodes
+    valid_notes = []
+
+    for note_id in note_ids:
+        current_note = validate_ownership_note(request, note_id)
+        valid_notes.append(current_note)
+    return valid_notes

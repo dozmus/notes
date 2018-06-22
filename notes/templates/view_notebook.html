@@ -9,7 +9,28 @@
 {% endblock %}
 
 {% block body %}
-    <p>
-        You are now only seeing notes in this notebook.
-    </p>
+    <form class="pure-form pure-form-aligned" action="{% url 'view-notebook' notebook_id=current_notebook.id %}"
+          method="post">
+        {% csrf_token %}
+
+        <fieldset>
+            {% for field in form %}
+                {{ field.errors }}
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.field.required %}
+                <span class="pure-form-message-inline">This is a required field.</span>
+                {% endif %}
+                {% if field.help_text %}
+                <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %}
+            {% endfor %}
+
+            <div class="pure-controls">
+                <button type="submit" name="download" class="pure-button pure-button-primary">Download</button>
+                <button type="submit" name="move" class="pure-button pure-button-primary">Move</button>
+                <button type="submit" name="delete" class="pure-button pure-button-primary">Delete</button>
+            </div>
+        </fieldset>
+    </form>
 {% endblock %}

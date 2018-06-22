@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, Form, MultipleChoiceField, CheckboxSelectMultiple
 
 from .models import Note, Notebook
 
@@ -16,3 +16,19 @@ class NoteForm(ModelForm):
     class Meta:
         model = Note
         fields = ['title', 'content', 'notebook']
+
+
+class SelectNotebookForm(ModelForm):
+    def restrict_to_user(self, user):
+        self.fields['notebook'].queryset = Notebook.objects.filter(owner=user)
+
+    class Meta:
+        model = Note
+        fields = ['notebook']
+
+
+class SelectNotesForm(Form):
+    def set_choices(self, notes):
+        choices = tuple([(note.id, str(note)) for note in notes])
+        lbl = 'Select some notes to interact with.'
+        self.fields['picked'] = MultipleChoiceField(label=lbl, choices=choices, widget=CheckboxSelectMultiple(), required=False)

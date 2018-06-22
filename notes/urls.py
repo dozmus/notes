@@ -40,6 +40,10 @@ urlpatterns = [
     path('edit-notebook/<int:notebook_id>/', views.edit_notebook, name='edit-notebook'),
     path('delete-notebook/<int:notebook_id>/', views.delete_notebook, name='delete-notebook'),
 
+    # Notebook selection operations
+    path(r'delete-notes/<note_ids>/', views.delete_notes, name='delete-notes'),
+    path(r'move-notes/<note_ids>/', views.move_notes, name='move-notes'),
+
     # Search
     path('search-notes/', views.search, name='search-notes'),
     path('search-notebook/<int:notebook_id>/', views.search_notebook, name='search-notebook'),

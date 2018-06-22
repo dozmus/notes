@@ -70,7 +70,7 @@
             {% if user.is_authenticated %}
                 {% block search %}
                 <div class="email-item email-item-selected pure-g">
-                    <form class="pure-form" action="{% url 'search-notes' %}" method="post">
+                    <form class="pure-form pure-u" action="{% url 'search-notes' %}" method="post">
                         {% csrf_token %}
                         <fieldset>
                             <input type="text" placeholder="Search..." name="query" id="id_query">
@@ -88,7 +88,7 @@
                     <a href="{% url 'view-note' note_id=n.id %}" class="email-item pure-g"
                             style="border-left: 6px solid {{ n.notebook.colour }}">
                     {% endif %}
-                        <div class="pure-u-3-4">
+                        <div class="pure-u">
                             <h5 class="email-name">{{ n.notebook.title }}</h5>
                             <h4 class="email-subject">{{ n.title|truncatechars:50 }}</h4>
                             <p class="email-desc">
@@ -98,14 +98,14 @@
                     </a>
                 {% empty %}
                     <div class="email-item pure-g">
-                        <div class="pure-u-3-4">
+                        <div class="pure-u">
                             <h5 class="email-name">You have no notes.</h5>
                         </div>
                     </div>
                 {% endfor %}
             {% else %}
                 <div class="email-item pure-g">
-                    <div class="pure-u-3-4">
+                    <div class="pure-u">
                         <h5 class="email-name">Please log in to create and view your notes.</h5>
                     </div>
                 </div>

@@ -75,9 +75,9 @@
                     {% endif %}
                         <div class="pure-u-3-4">
                             <h5 class="email-name">{{ n.notebook.title }}</h5>
-                            <h4 class="email-subject">{{ n.title }}</h4>
+                            <h4 class="email-subject">{{ n.title|truncatechars:50 }}</h4>
                             <p class="email-desc">
-                                {{ n.content|truncatechars:50 }}
+                                {{ n.content|truncatechars:100 }}
                             </p>
                         </div>
                     </a>

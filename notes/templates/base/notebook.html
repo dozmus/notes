@@ -1,11 +1,15 @@
 {% extends 'base/base.html' %}
 
-{% block title %}
-    Search {{ current_notebook.title }} "{{ query }}"
-{% endblock %}
-
-{% block main_title %}
-    Search {{ current_notebook.title }} "{{ query }}"
+{% block main_buttons %}
+    <a href="{% url 'download-notebook' notebook_id=current_notebook.id %}">
+        <button class="secondary-button pure-button">Download ZIP</button>
+    </a>
+    <a href="{% url 'edit-notebook' notebook_id=current_notebook.id %}">
+        <button class="secondary-button pure-button">Edit</button>
+    </a>
+    <a href="{% url 'delete-notebook' notebook_id=current_notebook.id %}">
+        <button class="secondary-button pure-button">Delete</button>
+    </a>
 {% endblock %}
 
 {% block search %}
@@ -18,11 +22,4 @@
             </fieldset>
         </form>
     </div>
-{% endblock %}
-
-{% block body %}
-    <p>
-        You are now only seeing notes within the notebook "{{ current_notebook.title }}" which match your search query
-        of "{{ query }}".
-    </p>
 {% endblock %}

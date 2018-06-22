@@ -36,6 +36,7 @@ urlpatterns = [
     # Notebooks
     path('new-notebook/', views.new_notebook, name='new-notebook'),
     path('view-notebook/<int:notebook_id>/', views.view_notebook, name='view-notebook'),
+    path('download-notebook/<int:notebook_id>/', views.download_notebook, name='download-notebook'),
     path('edit-notebook/<int:notebook_id>/', views.edit_notebook, name='edit-notebook'),
     path('delete-notebook/<int:notebook_id>/', views.delete_notebook, name='delete-notebook'),
 

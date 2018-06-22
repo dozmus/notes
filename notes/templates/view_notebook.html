@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base/notebook.html' %}
 
 {% block title %}
     {{ current_notebook.title }}
@@ -6,27 +6,6 @@
 
 {% block main_title %}
     {{ current_notebook.title }}
-{% endblock %}
-
-{% block search %}
-    <div class="email-item email-item-selected pure-g">
-        <form class="pure-form" action="{% url 'search-notebook' notebook_id=current_notebook.id %}" method="post">
-            {% csrf_token %}
-            <fieldset>
-                <input type="text" placeholder="Search..." name="query" id="id_query">
-                <button type="submit" class="pure-button"><i class="fa fa-search"></i></button>
-            </fieldset>
-        </form>
-    </div>
-{% endblock %}
-
-{% block main_buttons %}
-    <a href="{% url 'edit-notebook' notebook_id=current_notebook.id %}">
-        <button class="secondary-button pure-button">Edit</button>
-    </a>
-    <a href="{% url 'delete-notebook' notebook_id=current_notebook.id %}">
-        <button class="secondary-button pure-button">Delete</button>
-    </a>
 {% endblock %}
 
 {% block body %}

@@ -261,6 +261,11 @@ def delete_notebook(request, notebook_id):
 
 
 @login_required
+def download_notebook(request, notebook_id):
+        raise Http404()
+
+
+@login_required
 def search(request):
     if request.method != 'POST':
         return redirect('home')

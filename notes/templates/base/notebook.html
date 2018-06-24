@@ -14,11 +14,14 @@
 
 {% block search %}
     <div class="email-item email-item-selected pure-g">
-        <form class="pure-form" action="{% url 'search-notebook' notebook_id=current_notebook.id %}" method="post">
+        <form class="pure-form pure-u search-bar-container"
+              action="{% url 'search-notebook' notebook_id=current_notebook.id %}" method="post">
             {% csrf_token %}
             <fieldset>
-                <input type="text" placeholder="Search..." name="query" id="id_query">
-                <button type="submit" class="pure-button"><i class="fa fa-search"></i></button>
+                <button type="submit" class="pure-button search-button"><i class="fa fa-search"></i></button>
+                <span class="search-bar">
+                    <input type="text" class="full-width" placeholder="Search..." name="query" id="id_query">
+                </span>
             </fieldset>
         </form>
     </div>

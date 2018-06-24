@@ -12,6 +12,10 @@ a {
     color: #1b98f8;
 }
 
+.full-width {
+    width: 100%;
+}
+
 /*
  * -- HELPER STYLES --
  * Over-riding some of the .pure-button styles to make my buttons look unique
@@ -34,6 +38,22 @@ a {
     color: #666;
     padding: 0.5em 2em;
     font-size: 80%;
+}
+
+/*
+ * -- SEARCH CONTAINER STYLES --
+ */
+.search-bar-container {
+    width: 100%;
+    overflow: hidden;
+}
+.search-bar {
+    display: block;
+    overflow: hidden;
+    padding-right:10px;
+}
+.search-button {
+    float: right;
 }
 
 /*

@@ -12,11 +12,14 @@ a {
     color: #1b98f8;
 }
 
+.full-width {
+    width: 100%;
+}
+
 /*
  * -- HELPER STYLES --
  * Over-riding some of the .pure-button styles to make my buttons look unique
  */
-
 .primary-button,
 .secondary-button {
     -webkit-box-shadow: none;
@@ -24,19 +27,33 @@ a {
     box-shadow: none;
     border-radius: 20px;
 }
-
 .primary-button {
     color: #fff;
     background: #1b98f8;
     margin: 1em 0;
 }
-
 .secondary-button {
     background: #fff;
     border: 1px solid #ddd;
     color: #666;
     padding: 0.5em 2em;
     font-size: 80%;
+}
+
+/*
+ * -- SEARCH CONTAINER STYLES --
+ */
+.search-bar-container {
+    width: 100%;
+    overflow: hidden;
+}
+.search-bar {
+    display: block;
+    overflow: hidden;
+    padding-right:10px;
+}
+.search-button {
+    float: right;
 }
 
 /*

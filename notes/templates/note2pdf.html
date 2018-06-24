@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ note.title }}</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/pygments/default.css' %}">
 </head>
 <body>
     <h1>{{ note.title }}</h1>
-    <p>
-        {{ note.content }}
-    </p>
+
+    {{ note.rendered_content|safe }}
 </body>
 </html>

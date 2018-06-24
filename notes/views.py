@@ -3,7 +3,8 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from notes.file_response_provider import note2txt_response, note2pdf_response, notebook2zip_response, notes2zip_response
+from notes.file_response_provider import note2txt_response, note2pdf_response, notebook2zip_response, \
+    notes2zip_response, render_markdown
 from .models import Note, Notebook
 from .forms import NoteForm, NotebookForm, SelectNotesForm, SelectNotebookForm
 from .doa import notebooks, notes, search_notes
@@ -66,11 +67,11 @@ def view_note(request, note_id):
     current_note = validate_ownership_note(request, note_id)
 
     # Render
+    current_note.rendered_content = render_markdown(current_note.content)
     context = {
         'notebooks': notebooks(request),
         'notes': notes(request),
-        'current_note': current_note,
-        'current_note_lines': current_note.content.splitlines()
+        'current_note': current_note
     }
     return render(request, 'view_note.html', context)
 

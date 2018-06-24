@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block body %}
-    {% for line in current_note_lines %}
-        <p>{{ line }}</p>
-    {% endfor %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/pygments/default.css' %}">
+    {{ current_note.rendered_content|safe }}
 {% endblock %}

@@ -3,6 +3,7 @@ from zipfile import ZipFile
 
 from django.http import HttpResponse
 from easy_pdf.rendering import render_to_pdf_response
+from markdown2 import Markdown
 
 from notes.models import Note
 
@@ -20,6 +21,7 @@ def note2txt_response(note):
 def note2pdf_response(request, note):
     # Source: https://stackoverflow.com/a/48697734
     template = 'note2pdf.html'
+    note.rendered_content = render_markdown(note.content)
     context = {'note': note}
     response = render_to_pdf_response(request, template, context)
     response['Content-Disposition'] = 'attachment; filename="note-%s.pdf"' % str(note.id)
@@ -57,3 +59,7 @@ def notes2zip_response(notes, filename="notes-partial.zip"):
     in_memory.seek(0)
     response.write(in_memory.read())
     return response
+
+
+def render_markdown(raw):
+    return Markdown(extras=['fenced-code-blocks']).convert(raw)

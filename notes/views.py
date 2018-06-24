@@ -5,8 +5,9 @@ from django.urls import reverse
 
 from notes.file_response_provider import note2txt_response, note2pdf_response, notebook2zip_response, \
     notes2zip_response, render_markdown
-from .models import Note, Notebook
-from .forms import NoteForm, NotebookForm, SelectNotesForm, SelectNotebookForm
+from notes.syntax_highlighting import stylesheet_link
+from .models import Note, Notebook, UserProfile
+from .forms import NoteForm, NotebookForm, SelectNotesForm, SelectNotebookForm, UserProfileForm
 from .doa import notebooks, notes, search_notes
 
 
@@ -16,6 +17,32 @@ def home(request):
         'notes': notes(request)
     }
     return render(request, 'home.html', context)
+
+
+@login_required
+def edit_profile(request):
+    profile = UserProfile.objects.filter(user=request.user).get()
+
+    # Create form
+    if request.method != 'POST':
+        form = UserProfileForm(data={
+            'syntax_highlighting_style': profile.syntax_highlighting_style
+        })
+    else:
+        form = UserProfileForm(data=request.POST)
+
+        if form.is_valid():
+            profile.syntax_highlighting_style = form.cleaned_data['syntax_highlighting_style']
+            profile.save()
+            return redirect('home')
+
+    # Render
+    context = {
+        'form': form,
+        'notebooks': notebooks(request),
+        'notes': notes(request),
+    }
+    return render(request, 'edit_profile.html', context)
 
 
 @login_required
@@ -67,11 +94,13 @@ def view_note(request, note_id):
     current_note = validate_ownership_note(request, note_id)
 
     # Render
+    profile = UserProfile.objects.filter(user=request.user).get()
     current_note.rendered_content = render_markdown(current_note.content)
     context = {
         'notebooks': notebooks(request),
         'notes': notes(request),
-        'current_note': current_note
+        'current_note': current_note,
+        'syntax_highlighting_stylesheet': stylesheet_link(profile.syntax_highlighting_style)
     }
     return render(request, 'view_note.html', context)
 

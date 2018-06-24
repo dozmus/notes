@@ -27,6 +27,7 @@ urlpatterns = [
     # Users
     path('admin/', admin.site.urls),
     path('users/', include('users.urls', namespace='users')),
+    path('edit-profile/', views.edit_profile, name="edit-profile"),
 
     # Notes
     path('new-note/', views.new_note, name='new-note'),

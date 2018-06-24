@@ -10,6 +10,6 @@
 
 {% block body %}
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/pygments/default.css' %}">
+    <link rel="stylesheet" href="{% static syntax_highlighting_stylesheet %}">
     {{ current_note.rendered_content|safe }}
 {% endblock %}

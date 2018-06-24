@@ -1,6 +1,6 @@
 from django.forms import ModelForm, Form, MultipleChoiceField, CheckboxSelectMultiple
 
-from .models import Note, Notebook
+from .models import Note, Notebook, UserProfile
 
 
 class NotebookForm(ModelForm):
@@ -32,3 +32,9 @@ class SelectNotesForm(Form):
         choices = tuple([(note.id, str(note)) for note in notes])
         lbl = 'Select some notes to interact with.'
         self.fields['picked'] = MultipleChoiceField(label=lbl, choices=choices, widget=CheckboxSelectMultiple(), required=False)
+
+
+class UserProfileForm(ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['syntax_highlighting_style']

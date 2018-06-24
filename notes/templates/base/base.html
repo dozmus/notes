@@ -45,6 +45,7 @@
                             <a href="{% url 'users:login' %}" class="pure-menu-link">Log In</a>
                             <a href="{% url 'users:register' %}" class="pure-menu-link">Register</a>
                         {% else %}
+                            <a href="{% url 'edit-profile' %}" class="pure-menu-link">Edit Profile</a>
                             <a href="{% url 'users:logout' %}" class="pure-menu-link">Log Out</a>
                         {% endif %}
 

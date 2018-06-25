@@ -6,6 +6,7 @@ A minimal note-taking web application using Django licensed under the MIT Licens
 # Features
 * Create notes with Markdown
 * Organise notes into notebooks
+* Share links
 * Colour code notebooks
 * Search notes and notebooks
 * User accounts

@@ -19,5 +19,7 @@ A minimal note-taking web application using Django licensed under the MIT Licens
 * HTML Styling done using [PureCSS](https://purecss.io/) and [PureCSS Email Layout](https://purecss.io/layouts/email/).
 * Syntax highlighting stylesheets from [pygments-css](https://github.com/richleland/pygments-css)
 
-# Sample
-![Sample](sample.png)
+# Samples
+![Light theme](light-theme-sample.png)
+
+![Share links](share-links-sample.png)

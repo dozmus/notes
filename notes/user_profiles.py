@@ -5,14 +5,13 @@ from django.contrib.auth.models import User
 from notes.doa import notebooks, notes
 from notes.models import UserProfile
 from notes.syntax_highlighting import syntax_highlighting_stylesheet_link
-from notes.themes import stylesheet_url, stylesheet_ie_url
+from notes.themes import stylesheet_url
 
 
 def styled_context(user: User) -> Dict:
     if not user.is_authenticated:
         return {
             'stylesheet': stylesheet_url(''),
-            'stylesheet_ie': stylesheet_ie_url(''),
             'syntax_highlighting_stylesheet': syntax_highlighting_stylesheet_link(''),
         }
 
@@ -22,7 +21,6 @@ def styled_context(user: User) -> Dict:
 
     return {
         'stylesheet': stylesheet_url(theme),
-        'stylesheet_ie': stylesheet_ie_url(theme),
         'syntax_highlighting_stylesheet': syntax_highlighting_stylesheet_link(syntax_hightlighting_style),
     }
 

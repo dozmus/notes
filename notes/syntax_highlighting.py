@@ -10,7 +10,6 @@ STYLE_SHEETS = [
     'manni',
     'monokai',
     'murphy',
-    'murphy',
     'native',
     'pastie',
     'perldoc',

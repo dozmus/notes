@@ -1,8 +1,11 @@
 {% extends 'base/base.html' %}
 
 {% block main_buttons %}
-    <a href="{% url 'download-notebook' notebook_id=current_notebook.id %}">
-        <button class="secondary-button pure-button">Download ZIP</button>
+    <a href="{% url 'download-notebook' notebook_id=current_notebook.id filetype='txt' %}">
+        <button class="secondary-button pure-button">Download TXTs</button>
+    </a>
+    <a href="{% url 'download-notebook' notebook_id=current_notebook.id filetype='pdf' %}">
+        <button class="secondary-button pure-button">Download PDFs</button>
     </a>
     <a href="{% url 'edit-notebook' notebook_id=current_notebook.id %}">
         <button class="secondary-button pure-button">Edit</button>

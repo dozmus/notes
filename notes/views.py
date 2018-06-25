@@ -3,8 +3,8 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from notes.file_response_provider import note2txt_response, note2pdf_response, notebook2zip_response, \
-    notes2zip_response, render_markdown
+from notes.file_response_provider import note2txt_response, note2pdf_response, render_markdown, notebook2txtzip, \
+    notebook2pdfzip, notes2pdfzip_response, notes2txtzip_response
 from notes.syntax_highlighting import stylesheet_link
 from .models import Note, Notebook, UserProfile
 from .forms import NoteForm, NotebookForm, SelectNotesForm, SelectNotebookForm, UserProfileForm
@@ -189,8 +189,12 @@ def view_notebook(request, notebook_id):
 
             if len(valid_notes) > 0:
                 # Download
-                if 'download' in request.POST:
-                    return notes2zip_response(valid_notes, 'notes-%s-partial' % current_notebook.title)
+                if 'downloadtxts' in request.POST:
+                    return notes2txtzip_response(valid_notes, 'notes-%s-partial' % current_notebook.title)
+
+                # Download
+                if 'downloadpdfs' in request.POST:
+                    return notes2pdfzip_response(valid_notes, 'notes-%s-partial' % current_notebook.title)
 
                 # Move
                 if 'move' in request.POST:
@@ -312,12 +316,17 @@ def delete_notebook(request, notebook_id):
 
 
 @login_required
-def download_notebook(request, notebook_id):
+def download_notebook(request, notebook_id, filetype):
     # Validate notebook
     current_notebook = validate_ownership_notebook(request, notebook_id)
 
     # Return file
-    return notebook2zip_response(current_notebook)
+    if filetype == 'txt':
+        return notebook2txtzip(current_notebook)
+    elif filetype == 'pdf':
+        return notebook2pdfzip(current_notebook)
+    else:
+        raise Http404('Invalid filetype.')
 
 
 @login_required

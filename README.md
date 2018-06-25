@@ -20,6 +20,8 @@ A minimal note-taking web application using Django licensed under the MIT Licens
 * Syntax highlighting stylesheets from [pygments-css](https://github.com/richleland/pygments-css)
 
 # Samples
+## Light theme
 ![Light theme](light-theme-sample.png)
 
+## Share links
 ![Share links](share-links-sample.png)

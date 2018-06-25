@@ -1,0 +1,46 @@
+{% extends 'base/note.html' %}
+
+{% block title %}
+    Share "{{ current_note.title }}"
+{% endblock title %}
+
+{% block main_title %}
+    Share "{{ current_note.title }}"
+{% endblock %}
+
+{% block body %}
+    <table class="pure-table">
+        <thead>
+            <tr>
+                <th>URL</th>
+                <th>Permissions</th>
+                <th>Expiry Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for link in sharable_links %}
+            <tr>
+                <td><a href="{{ link.full_url }}">{{ link.full_url }}</a></td>
+                <td>{{ link.permissions }}</td>
+                <td>{{ link.expiry_date }}</td>
+                <td>
+                    <a href="{% url 'edit-share-link' note_id=current_note.id code=link.code %}">
+                        <button type="button" class="pure-button pure-button-primary">Edit</button>
+                    </a>
+                    <a href="{% url 'delete-share-link' note_id=current_note.id code=link.code %}">
+                        <button type="button" class="pure-button pure-button-primary">Delete</button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br />
+
+    <a href="{% url 'new-share-link' note_id=current_note.id %}">
+        <button type="button" class="pure-button pure-button-primary">Create</button>
+    </a>
+{% endblock %}

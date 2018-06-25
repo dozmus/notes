@@ -1,0 +1,32 @@
+{% extends 'base/note.html' %}
+
+{% block title %}
+    {{ current_note.title }}
+{% endblock %}
+
+{% block main_title %}
+    {{ current_note.title }}
+{% endblock %}
+
+{% block main_buttons %}
+    <a href="{% url 'download-shared-note' note_id=current_note.id filetype='txt' code=code %}">
+        <button class="secondary-button pure-button">Download TXT</button>
+    </a>
+    <a href="{% url 'download-shared-note' note_id=current_note.id filetype='pdf' code=code %}">
+        <button class="secondary-button pure-button">Download PDF</button>
+    </a>
+    {% if permissions == 'read+write' %}
+    <a href="{% url 'edit-shared-note' note_id=current_note.id code=code %}">
+        <button class="secondary-button pure-button">Edit</button>
+    </a>
+    <a href="{% url 'delete-shared-note' note_id=current_note.id code=code %}">
+        <button class="secondary-button pure-button">Delete</button>
+    </a>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static syntax_highlighting_stylesheet %}">
+    {{ current_note.rendered_content|safe }}
+{% endblock %}

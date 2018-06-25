@@ -1,0 +1,37 @@
+{% extends 'base/note.html' %}
+
+{% block title %}
+    Edit "{{ current_note.title }}"
+{% endblock title %}
+
+{% block main_title %}
+    Edit "{{ current_note.title }}"
+{% endblock %}
+
+{% block body %}
+    <form class="pure-form pure-form-aligned" action="{% url 'edit-shared-note' note_id=current_note.id code=code%}"
+          method="post">
+        {% csrf_token %}
+
+        <fieldset>
+            {% for field in form %}
+                <div class="pure-control-group">
+                    {{ field.errors }}
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.field.required %}
+                    <span class="pure-form-message-inline">This is a required field.</span>
+                    {% endif %}
+                    {% if field.help_text %}
+                    <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div class="pure-controls">
+                <button type="submit" class="pure-button pure-button-primary">Save</button>
+                <button type="button" class="pure-button pure-button-primary" onclick="window.history.back();">Cancel</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

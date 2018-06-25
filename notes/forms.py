@@ -1,6 +1,6 @@
 from django.forms import ModelForm, Form, MultipleChoiceField, CheckboxSelectMultiple
 
-from .models import Note, Notebook, UserProfile
+from .models import Note, Notebook, UserProfile, SharableLink
 
 
 class NotebookForm(ModelForm):
@@ -16,6 +16,12 @@ class NoteForm(ModelForm):
     class Meta:
         model = Note
         fields = ['title', 'content', 'notebook']
+
+
+class SharedNoteForm(ModelForm):
+    class Meta:
+        model = Note
+        fields = ['title', 'content']
 
 
 class SelectNotebookForm(ModelForm):
@@ -38,3 +44,19 @@ class UserProfileForm(ModelForm):
     class Meta:
         model = UserProfile
         fields = ['syntax_highlighting_style']
+
+
+class SharableLinkForm(ModelForm):
+    def set_code(self, code):
+        self.fields['code'].widget.attrs['value'] = code
+        self.fields['code'].widget.attrs['readonly'] = True
+
+    class Meta:
+        model = SharableLink
+        fields = ['code', 'permissions', 'expiry_date']
+
+
+class EditSharableLinkForm(ModelForm):
+    class Meta:
+        model = SharableLink
+        fields = ['permissions', 'expiry_date']

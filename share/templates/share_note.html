@@ -26,10 +26,10 @@
                 <td>{{ link.permissions }}</td>
                 <td>{{ link.expiry_date }}</td>
                 <td>
-                    <a href="{% url 'edit-share-link' note_id=current_note.id code=link.code %}">
+                    <a href="{% url 'share:edit-link' note_id=current_note.id code=link.code %}">
                         <button type="button" class="pure-button pure-button-primary">Edit</button>
                     </a>
-                    <a href="{% url 'delete-share-link' note_id=current_note.id code=link.code %}">
+                    <a href="{% url 'share:delete-link' note_id=current_note.id code=link.code %}">
                         <button type="button" class="pure-button pure-button-primary">Delete</button>
                     </a>
                 </td>
@@ -40,7 +40,7 @@
 
     <br />
 
-    <a href="{% url 'new-share-link' note_id=current_note.id %}">
+    <a href="{% url 'share:new-link' note_id=current_note.id %}">
         <button type="button" class="pure-button pure-button-primary">Create</button>
     </a>
 {% endblock %}

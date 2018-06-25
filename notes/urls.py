@@ -29,24 +29,15 @@ urlpatterns = [
     path('users/', include('users.urls', namespace='users')),
     path('edit-profile/', views.edit_profile, name="edit-profile"),
 
+    # Share
+    path('share/', include('share.urls', namespace='share')),
+
     # Notes
     path('new-note/', views.new_note, name='new-note'),
     path('view-note/<int:note_id>/', views.view_note, name='view-note'),
     path('download-note/<int:note_id>/<filetype>/', views.download_note, name='download-note'),
     path('edit-note/<int:note_id>/', views.edit_note, name='edit-note'),
     path('delete-note/<int:note_id>/', views.delete_note, name='delete-note'),
-
-    # Sharable note links
-    path('share-note/<int:note_id>/', views.share_note, name='share-note'),
-    path('new-share-link/<int:note_id>/', views.new_share_link, name='new-share-link'),
-    path('edit-share-link/<int:note_id>/<code>/', views.edit_share_link, name='edit-share-link'),
-    path('delete-share-link/<int:note_id>/<code>/', views.delete_share_link, name='delete-share-link'),
-
-    # Sharable notes
-    path('view-note/<int:note_id>/<code>/', views.view_shared_note, name='view-shared-note'),
-    path('download-note/<int:note_id>/<filetype>/<code>/', views.download_shared_note, name='download-shared-note'),
-    path('edit-shared-note/<int:note_id>/<code>/', views.edit_shared_note, name='edit-shared-note'),
-    path('delete-shared-note/<int:note_id>/<code>/', views.delete_shared_note, name='delete-shared-note'),
 
     # Notebooks
     path('new-notebook/', views.new_notebook, name='new-notebook'),

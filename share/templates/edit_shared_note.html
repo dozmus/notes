@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block body %}
-    <form class="pure-form pure-form-aligned" action="{% url 'edit-shared-note' note_id=current_note.id code=code%}"
+    <form class="pure-form pure-form-aligned" action="{% url 'share:edit-note' note_id=current_note.id code=code%}"
           method="post">
         {% csrf_token %}
 

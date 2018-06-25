@@ -1,14 +1,15 @@
 from io import BytesIO
+from typing import List, Tuple
 from zipfile import ZipFile
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from easy_pdf.rendering import render_to_pdf_response, render_to_pdf
 from markdown2 import Markdown
 
-from notes.models import Note
+from notes.models import Note, Notebook
 
 
-def note2txt_response(note):
+def note2txt_response(note: Note) -> HttpResponse:
     response = HttpResponse(content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename="note-%s.txt"' % str(note.id)
 
@@ -18,7 +19,7 @@ def note2txt_response(note):
     return response
 
 
-def note2pdf_response(request, note):
+def note2pdf_response(request: HttpRequest, note: Note) -> HttpResponse:
     # Source: https://stackoverflow.com/a/48697734
     template = 'note2pdf.html'
     note.rendered_content = render_markdown(note.content)
@@ -28,19 +29,19 @@ def note2pdf_response(request, note):
     return response
 
 
-def notebook2txtzip(notebook):
+def notebook2txtzip(notebook: Notebook) -> HttpResponse:
     notes = Note.objects.filter(notebook_id=notebook.id).order_by('id')
     filename = 'notebook-%s.zip' % notebook.title
     return notes2txtzip_response(notes, filename)
 
 
-def notebook2pdfzip(notebook):
+def notebook2pdfzip(notebook: Notebook) -> HttpResponse:
     notes = Note.objects.filter(notebook_id=notebook.id).order_by('id')
     filename = 'notebook-%s.zip' % notebook.title
     return notes2pdfzip_response(notes, filename)
 
 
-def notes2txtzip_response(notes, filename='notes-partial.zip'):
+def notes2txtzip_response(notes: List[Note], filename: str='notes-partial.zip') -> HttpResponse:
     # Create contents
     files = []
 
@@ -53,7 +54,7 @@ def notes2txtzip_response(notes, filename='notes-partial.zip'):
     return zip_response(files, filename)
 
 
-def notes2pdfzip_response(notes, filename='notes-partial.zip'):
+def notes2pdfzip_response(notes: List[Note], filename: str='notes-partial.zip') -> HttpResponse:
     # Create contents
     files = []
 
@@ -66,7 +67,12 @@ def notes2pdfzip_response(notes, filename='notes-partial.zip'):
     return zip_response(files, filename)
 
 
-def zip_response(files, filename):
+def zip_response(files: List[Tuple[str, str or bytes]], filename: str) -> HttpResponse:
+    """
+    Returns a HttpResponse for downloading a zip file with the argument files and names.
+    :param files: a list of tuples, whose first entry is filename and second content (a string or bytes).
+    :param filename: the zip file name
+    """
     # Source: https://chase-seibert.github.io/blog/2010/07/23/django-zip-files-create-dynamic-in-memory-archives-with-pythons-zipfile.html
     # Create ZIP
     in_memory = BytesIO()
@@ -92,12 +98,16 @@ def zip_response(files, filename):
     return response
 
 
-def note2pdf(note):
+def note2pdf(note: Note):
     template = 'note2pdf.html'
     note.rendered_content = render_markdown(note.content)
     context = {'note': note}
     return render_to_pdf(template, context)
 
 
-def render_markdown(raw):
+def render_markdown(raw: str) -> str:
+    """
+    Returns the argument raw markdown as its equivalent HTML, with the 'fenced-code-blocks' option.
+    :param raw: raw markdown
+    """
     return Markdown(extras=['fenced-code-blocks']).convert(raw)

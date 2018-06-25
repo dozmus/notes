@@ -26,8 +26,8 @@ def register_view(request):
 
     context = {
         'form': form,
-        'notebooks': notebooks(request),
-        'notes': notes(request)
+        'notebooks': notebooks(request.user),
+        'notes': notes(request.user)
     }
     return render(request, 'register.html', context)
 
@@ -46,7 +46,7 @@ def login_view(request):
 
     context = {
         'form': form,
-        'notebooks': notebooks(request),
-        'notes': notes(request)
+        'notebooks': notebooks(request.user),
+        'notes': notes(request.user)
     }
     return render(request, 'login.html', context)

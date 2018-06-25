@@ -37,8 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Internal applications
     'notes',
     'users',
+    'share',
+    # External libraries
     'colorful'
 ]
 
@@ -123,7 +126,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'notes/templates'),)
+TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'notes/templates'), os.path.join(BASE_DIR, 'share/templates'),)
 
 # Login URLs
 LOGIN_URL = '/users/login/'

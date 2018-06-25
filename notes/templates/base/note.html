@@ -7,7 +7,7 @@
     <a href="{% url 'download-note' note_id=current_note.id filetype='pdf' %}">
         <button class="secondary-button pure-button">Download PDF</button>
     </a>
-    <a href="{% url 'share-note' note_id=current_note.id %}">
+    <a href="{% url 'share:share-note' note_id=current_note.id %}">
         <button class="secondary-button pure-button">Share</button>
     </a>
     <a href="{% url 'edit-note' note_id=current_note.id %}">

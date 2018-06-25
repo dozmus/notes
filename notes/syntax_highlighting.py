@@ -26,4 +26,4 @@ def stylesheet_link(syntax_highlighting_style, default=STYLE_SHEETS[0]):
     for stylesheet in STYLE_SHEETS:
         if syntax_highlighting_style == stylesheet:
             return 'css/pygments/%s.css' % stylesheet
-    return 'css/pygments/%s.css' % STYLE_SHEETS[0]
+    return 'css/pygments/%s.css' % default

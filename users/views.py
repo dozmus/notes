@@ -1,11 +1,14 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 from notes.doa import notebooks, notes
 from notes.models import UserProfile
+from notes.user_profiles import regular_context
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return redirect('home')
@@ -24,11 +27,9 @@ def register_view(request):
             login(request, authed_user)
             return redirect('home')
 
-    context = {
-        'form': form,
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user)
-    }
+    # Render
+    context = regular_context(request.user)
+    context['form'] = form
     return render(request, 'register.html', context)
 
 
@@ -44,9 +45,7 @@ def login_view(request):
             login(request, authed_user)
             return redirect('home')
 
-    context = {
-        'form': form,
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user)
-    }
+    # Render
+    context = regular_context(request.user)
+    context['form'] = form
     return render(request, 'login.html', context)

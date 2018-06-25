@@ -6,17 +6,14 @@ from django.urls import reverse
 from notes.doa import validate_ownership_notebook, validate_ownership_note, validate_ownership_notes
 from notes.file_response_provider import note2txt_response, note2pdf_response, render_markdown, notebook2txtzip, \
     notebook2pdfzip, notes2pdfzip_response, notes2txtzip_response
-from notes.syntax_highlighting import stylesheet_link
 from .models import Note, UserProfile
 from .forms import NoteForm, NotebookForm, SelectNotesForm, SelectNotebookForm, UserProfileForm
 from .doa import notebooks, notes, search_notes
+from .user_profiles import styled_context, regular_context
 
 
 def home(request):
-    context = {
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user)
-    }
+    context = regular_context(request.user)
     return render(request, 'home.html', context)
 
 
@@ -27,22 +24,21 @@ def edit_profile(request):
     # Create form
     if request.method != 'POST':
         form = UserProfileForm(data={
-            'syntax_highlighting_style': profile.syntax_highlighting_style
+            'theme': profile.theme,
+            'syntax_highlighting_style': profile.syntax_highlighting_style,
         })
     else:
         form = UserProfileForm(data=request.POST)
 
         if form.is_valid():
+            profile.theme = form.cleaned_data['theme']
             profile.syntax_highlighting_style = form.cleaned_data['syntax_highlighting_style']
             profile.save()
             return redirect('home')
 
     # Render
-    context = {
-        'form': form,
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user),
-    }
+    context = regular_context(request.user)
+    context['form'] = form
     return render(request, 'edit_profile.html', context)
 
 
@@ -60,11 +56,8 @@ def new_notebook(request):
             return redirect('home')
 
     # Render
-    context = {
-        'form': form,
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user)
-    }
+    context = regular_context(request.user)
+    context['form'] = form
     return render(request, 'new_notebook.html', context)
 
 
@@ -81,11 +74,8 @@ def new_note(request):
             return redirect('home')
 
     # Render
-    context = {
-        'form': form,
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user)
-    }
+    context = regular_context(request.user)
+    context['form'] = form
     return render(request, 'new_note.html', context)
 
 
@@ -95,14 +85,10 @@ def view_note(request, note_id):
     current_note = validate_ownership_note(request.user, note_id)
 
     # Render
-    profile = UserProfile.objects.filter(user=request.user).get()
     current_note.rendered_content = render_markdown(current_note.content)
-    context = {
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user),
-        'current_note': current_note,
-        'syntax_highlighting_stylesheet': stylesheet_link(profile.syntax_highlighting_style)
-    }
+
+    context = regular_context(request.user)
+    context['current_note'] = current_note
     return render(request, 'view_note.html', context)
 
 
@@ -140,12 +126,10 @@ def move_notes(request, note_ids):
             return redirect('home')
 
     # Render
-    context = {
-        'form': form,
-        'notebooks': notebooks(request.user),
-        'notes': notes,
-        'current_note_ids': note_ids
-    }
+    context = regular_context(request.user)
+    context['notes'] = notes
+    context['form'] = form
+    context['current_note_ids'] = note_ids
     return render(request, 'move_notes.html', context)
 
 
@@ -161,11 +145,9 @@ def delete_notes(request, note_ids):
         return redirect('home')
 
     # Render
-    context = {
-        'notebooks': notebooks(request.user),
-        'notes': notes,
-        'current_note_ids': note_ids
-    }
+    context = regular_context(request.user)
+    context['notes'] = notes
+    context['current_note_ids'] = note_ids
     return render(request, 'delete_notes.html', context)
 
 
@@ -208,12 +190,10 @@ def view_notebook(request, notebook_id):
                     return HttpResponseRedirect(reverse('delete-notes', kwargs={'note_ids': note_ids}))
 
     # Render
-    context = {
-        'form': form,
-        'notebooks': notebooks(request.user),
-        'notes': notes,
-        'current_notebook': current_notebook
-    }
+    context = regular_context(request.user)
+    context['form'] = form
+    context['notes'] = notes
+    context['current_notebook'] = current_notebook
     return render(request, 'view_notebook.html', context)
 
 
@@ -241,12 +221,9 @@ def edit_note(request, note_id):
             return redirect('home')
 
     # Render
-    context = {
-        'form': form,
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user),
-        'current_note': current_note
-    }
+    context = regular_context(request.user)
+    context['form'] = form
+    context['current_note'] = current_note
     return render(request, 'edit_note.html', context)
 
 
@@ -260,11 +237,8 @@ def delete_note(request, note_id):
         return redirect('home')
 
     # Render
-    context = {
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user),
-        'current_note': current_note
-    }
+    context = regular_context(request.user)
+    context['current_note'] = current_note
     return render(request, 'delete_note.html', context)
 
 
@@ -289,12 +263,9 @@ def edit_notebook(request, notebook_id):
             return redirect('home')
 
     # Render
-    context = {
-        'form': form,
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user),
-        'current_notebook': current_notebook
-    }
+    context = regular_context(request.user)
+    context['form'] = form
+    context['current_notebook'] = current_notebook
     return render(request, 'edit_notebook.html', context)
 
 
@@ -308,11 +279,8 @@ def delete_notebook(request, notebook_id):
         return redirect('home')
 
     # Render
-    context = {
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user),
-        'current_notebook': current_notebook
-    }
+    context = regular_context(request.user)
+    context['current_notebook'] = current_notebook
     return render(request, 'delete_notebook.html', context)
 
 
@@ -338,11 +306,9 @@ def search(request):
     # Render
     query = request.POST['query']
 
-    context = {
-        'notebooks': notebooks(request.user),
-        'notes': search_notes(request.user, query),
-        'query': query
-    }
+    context = regular_context(request.user)
+    context['query'] = query
+    context['notes'] = search_notes(request.user, query)
     return render(request, 'search.html', context)
 
 
@@ -357,10 +323,8 @@ def search_notebook(request, notebook_id):
     # Render
     query = request.POST['query']
 
-    context = {
-        'notebooks': notebooks(request.user),
-        'notes': search_notes(request.user, query, current_notebook),
-        'current_notebook': current_notebook,
-        'query': query
-    }
+    context = regular_context(request.user)
+    context['query'] = query
+    context['notes'] = search_notes(request.user, query, current_notebook),
+    context['current_notebook'] = current_notebook
     return render(request, 'search_notebook.html', context)

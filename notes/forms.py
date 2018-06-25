@@ -38,4 +38,4 @@ class SelectNotesForm(Form):
 class UserProfileForm(ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['syntax_highlighting_style']
+        fields = ['theme', 'syntax_highlighting_style']

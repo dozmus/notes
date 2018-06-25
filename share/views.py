@@ -10,7 +10,7 @@ from django.utils.timezone import utc
 from notes.doa import notebooks, notes, validate_ownership_note
 from notes.file_response_provider import render_markdown, note2txt_response, note2pdf_response
 from notes.models import UserProfile, Note
-from notes.syntax_highlighting import stylesheet_link
+from notes.user_profiles import regular_context
 from share.forms import SharableLinkForm, EditSharableLinkForm, SharedNoteForm
 from share.models import SharableLink
 
@@ -27,15 +27,11 @@ def share_note(request, note_id):
         args = {'note_id': current_note.id, 'code': link.code}
         link.full_url = request.build_absolute_uri(reverse('share:view-note', kwargs=args))
 
-    profile = UserProfile.objects.filter(user=request.user).get()
     current_note.rendered_content = render_markdown(current_note.content)
-    context = {
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user),
-        'current_note': current_note,
-        'syntax_highlighting_stylesheet': stylesheet_link(profile.syntax_highlighting_style),
-        'sharable_links': sharable_links,
-    }
+
+    context = regular_context(request.user)
+    context['current_note'] = current_note
+    context['sharable_links'] = sharable_links
     return render(request, 'share_note.html', context)
 
 
@@ -66,12 +62,9 @@ def new_share_link(request, note_id):
             return redirect('home')
 
     # Render
-    context = {
-        'form': form,
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user),
-        'current_note': current_note
-    }
+    context = regular_context(request.user)
+    context['form'] = form
+    context['current_note'] = current_note
     return render(request, 'new_share_link.html', context)
 
 
@@ -96,13 +89,10 @@ def edit_share_link(request, note_id, code):
             return redirect('home')
 
     # Render
-    context = {
-        'form': form,
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user),
-        'current_note': current_note,
-        'code': code
-    }
+    context = regular_context(request.user)
+    context['form'] = form
+    context['current_note'] = current_note
+    context['code'] = code
     return render(request, 'edit_share_link.html', context)
 
 
@@ -116,12 +106,9 @@ def delete_share_link(request, note_id, code):
         return redirect('home')
 
     # Render
-    context = {
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user),
-        'current_note': note,
-        'code': code,
-    }
+    context = regular_context(request.user)
+    context['current_note'] = note
+    context['code'] = code
     return render(request, 'delete_share_link.html', context)
 
 
@@ -145,13 +132,10 @@ def edit_shared_note(request, note_id, code):
             return redirect('home')
 
     # Render
-    context = {
-        'form': form,
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user),
-        'current_note': note,
-        'code': code
-    }
+    context = regular_context(request.user)
+    context['form'] = form
+    context['current_note'] = note
+    context['code'] = code
     return render(request, 'edit_shared_note.html', context)
 
 
@@ -164,12 +148,9 @@ def delete_shared_note(request, note_id, code):
         return redirect('home')
 
     # Render
-    context = {
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user),
-        'current_note': note,
-        'code': code,
-    }
+    context = regular_context(request.user)
+    context['current_note'] = note
+    context['code'] = code
     return render(request, 'delete_shared_note.html', context)
 
 
@@ -190,22 +171,13 @@ def view_shared_note(request, note_id, code):
     # Validate note
     note, sharable_link = validate_ownership_shared_note(request, note_id, code)
 
-    # Stylesheet
-    if request.user.is_authenticated:
-        syntax_highlighting_style = UserProfile.objects.filter(user=request.user).get().syntax_highlighting_style
-    else:
-        syntax_highlighting_style = stylesheet_link([])
-
     # Render
     note.rendered_content = render_markdown(note.content)
-    context = {
-        'notebooks': notebooks(request.user),
-        'notes': notes(request.user),
-        'current_note': note,
-        'syntax_highlighting_stylesheet': syntax_highlighting_style,
-        'code': sharable_link.code,
-        'permissions': sharable_link.permissions,
-    }
+
+    context = regular_context(request.user)
+    context['current_note'] = note
+    context['code'] = sharable_link.code
+    context['permissions'] = sharable_link.permissions
     return render(request, 'view_shared_note.html', context)
 
 

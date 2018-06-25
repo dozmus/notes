@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Model, CharField, TextField, ForeignKey, CASCADE
 
 from notes.syntax_highlighting import SYNTAX_HIGHLIGHTING_CHOICES
+from notes.themes import THEME_CHOICES
 
 
 class Notebook(Model):
@@ -32,4 +33,5 @@ class Note(Model):
 class UserProfile(Model):
     syntax_highlighting_style = CharField(max_length=8, choices=SYNTAX_HIGHLIGHTING_CHOICES,
                                           default=SYNTAX_HIGHLIGHTING_CHOICES[0][1])
+    theme = CharField(max_length=5, choices=THEME_CHOICES, default=THEME_CHOICES[0][1])
     user = ForeignKey(User, on_delete=CASCADE)

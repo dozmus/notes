@@ -8,6 +8,16 @@
     {{ current_note.title }}
 {% endblock %}
 
+{% block main_subtitle %}
+    {% if current_note.tag_list|length > 0 %}
+    <p class="note-tags">
+        {% for tag in current_note.tag_list %}
+            <span class="note-tag">{{ tag }}</span>
+        {% endfor %}
+    </p>
+    {% endif %}
+{% endblock %}
+
 {% block main_buttons %}
     <a href="{% url 'share:download-note' note_id=current_note.id filetype='txt' code=code %}">
         <button class="secondary-button pure-button">Download TXT</button>

@@ -120,7 +120,8 @@ def edit_shared_note(request, note_id, code):
     if request.method != 'POST':
         form = SharedNoteForm(data={
             'title': note.title,
-            'content': note.content
+            'content': note.content,
+            'tags': note.tags
         })
     else:
         form = SharedNoteForm(data=request.POST)
@@ -128,6 +129,7 @@ def edit_shared_note(request, note_id, code):
         if form.is_valid() and sharable_link.permissions == 'read+write':
             note.title = form.cleaned_data['title']
             note.content = form.cleaned_data['content']
+            note.tags = form.cleaned_data['tags']
             note.save()
             return redirect('home')
 

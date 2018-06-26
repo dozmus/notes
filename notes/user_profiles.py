@@ -9,24 +9,28 @@ from notes.themes import stylesheet_url
 
 
 def styled_context(user: User) -> Dict:
+    # Default themes for non-logged in users
     if not user.is_authenticated:
         return {
             'stylesheet': stylesheet_url(''),
             'syntax_highlighting_stylesheet': syntax_highlighting_stylesheet_link(''),
         }
 
+    # User-specific themes
     profile = UserProfile.objects.filter(user=user).get()
     theme = profile.theme
-    syntax_hightlighting_style = profile.syntax_highlighting_style
+    syntax_highlighting_style = profile.syntax_highlighting_style
 
     return {
         'stylesheet': stylesheet_url(theme),
-        'syntax_highlighting_stylesheet': syntax_highlighting_stylesheet_link(syntax_hightlighting_style),
+        'syntax_highlighting_stylesheet': syntax_highlighting_stylesheet_link(syntax_highlighting_style),
     }
 
 
 def regular_context(user: User) -> Dict:
     context = styled_context(user)
-    context['notebooks'] = notebooks(user)
-    context['notes'] = notes(user)
+
+    if user.is_authenticated:
+        context['notebooks'] = notebooks(user)
+        context['notes'] = notes(user)
     return context

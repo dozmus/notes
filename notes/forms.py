@@ -1,4 +1,5 @@
 from django.forms import ModelForm, Form, MultipleChoiceField, CheckboxSelectMultiple
+from django.forms.utils import ErrorList
 
 from .models import Note, Notebook, UserProfile
 
@@ -15,7 +16,7 @@ class NoteForm(ModelForm):
 
     class Meta:
         model = Note
-        fields = ['title', 'content', 'notebook']
+        fields = ['title', 'content', 'notebook', 'tags']
 
 
 class SelectNotebookForm(ModelForm):

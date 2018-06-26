@@ -1,4 +1,5 @@
 from django.forms import ModelForm
+from django.forms.utils import ErrorList
 
 from notes.models import Note
 from share.models import SharableLink
@@ -7,7 +8,7 @@ from share.models import SharableLink
 class SharedNoteForm(ModelForm):
     class Meta:
         model = Note
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'tags']
 
 
 class SharableLinkForm(ModelForm):

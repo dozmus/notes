@@ -28,10 +28,10 @@ def notes(user: User) -> QuerySet:
         return QuerySet()
 
 
-def search_notes(user: User, query: str, notebook: Notebook=None) -> QuerySet:
+def search_notes(user: User, query: str, notebook: Notebook=None) -> List[Note]:
     """
     Returns all note belonging to the argument user if they are authenticated, otherwise it returns an empty QuerySet.
-    The notes it returns are those whose title or content contains the search query.
+    The notes it returns are those whose title, content, or tags contains the search query.
     If the argument notebook is specified, only notes in it are searched.
     """
     if user.is_authenticated:
@@ -39,12 +39,17 @@ def search_notes(user: User, query: str, notebook: Notebook=None) -> QuerySet:
 
         if notebook is not None:
             owners_notes = owners_notes.filter(notebook_id=notebook.id)
+        owners_notes = owners_notes.order_by('id')
 
-        by_title = owners_notes.filter(title__contains=query).order_by('id')
-        by_content = owners_notes.filter(content__contains=query).order_by('id')
-        return by_title | by_content
+        # Compute results
+        results = []
+
+        for note in owners_notes:
+            if query in note.title or query in note.content or query in note.tag_list():
+                results.append(note)
+        return results
     else:
-        return QuerySet()
+        return []
 
 
 def validate_ownership_notebook(user: User, notebook_id: int) -> Notebook:

@@ -1,0 +1,14 @@
+<textarea name="{{ widget.name }}"{% include "tags/widgets/attrs.html" %}>
+{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
+
+<script type="text/javascript">
+    var input = document.querySelector('textarea[name={{ widget.name }}]'), tagify = new Tagify(input, {
+        {% for key, value in tagify_settings.items %}
+            {% if key == 'duplicates' or key == 'autocomplete' or key == 'enforceWhitelist' or key == 'maxTags' %}
+                '{{ key }}': {{ value|lower }},
+            {% elif key == 'whitelist' or key == 'blacklist' %}
+                '{{ key }}': {{ value|safe }},
+            {% endif %}
+        {% endfor %}
+    });
+</script>

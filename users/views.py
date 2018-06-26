@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from notes.doa import notebooks, notes
 from notes.models import UserProfile
 from notes.user_profiles import regular_context
 

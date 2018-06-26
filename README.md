@@ -5,6 +5,7 @@ A minimal note-taking web application using Django licensed under the MIT Licens
 
 # Features
 * Create notes with Markdown
+* Organise notes using tags
 * Organise notes into notebooks
 * Share links
 * Colour code notebooks
@@ -18,6 +19,7 @@ A minimal note-taking web application using Django licensed under the MIT Licens
 # Credits
 * HTML Styling done using [PureCSS](https://purecss.io/) and [PureCSS Email Layout](https://purecss.io/layouts/email/).
 * Syntax highlighting stylesheets from [pygments-css](https://github.com/richleland/pygments-css)
+* Tags input field constructed using [tagify](https://github.com/yairEO/tagify)
 
 # Samples
 ## Light theme

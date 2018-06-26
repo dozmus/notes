@@ -92,6 +92,13 @@
                             <p class="email-desc">
                                 {{ n.content|truncatechars:100 }}
                             </p>
+                            {% if n.tag_list|length > 0 %}
+                            <p class="note-tags">
+                                {% for tag in n.tag_list %}
+                                    <span class="note-tag">{{ tag }}</span>
+                                {% endfor %}
+                            </p>
+                            {% endif %}
                         </div>
                     </a>
                 {% empty %}

@@ -8,8 +8,8 @@ from notes.file_response_provider import note2txt_response, note2pdf_response, r
     notebook2pdfzip, notes2pdfzip_response, notes2txtzip_response
 from .models import Note, UserProfile
 from .forms import NoteForm, NotebookForm, SelectNotesForm, SelectNotebookForm, UserProfileForm
-from .doa import notebooks, notes, search_notes
-from .user_profiles import styled_context, regular_context
+from .doa import search_notes
+from .user_profiles import regular_context
 
 
 def home(request):
@@ -89,6 +89,7 @@ def view_note(request, note_id):
 
     context = regular_context(request.user)
     context['current_note'] = current_note
+    # current_note.tag_list = current_note.tags.split(',') if len(current_note.tags) > 0 else []
     return render(request, 'view_note.html', context)
 
 
@@ -207,7 +208,8 @@ def edit_note(request, note_id):
         form = NoteForm(data={
             'title': current_note.title,
             'notebook': current_note.notebook,
-            'content': current_note.content
+            'content': current_note.content,
+            'tags': current_note.tags,
         })
         form.restrict_to_user(request.user)
     else:
@@ -217,6 +219,7 @@ def edit_note(request, note_id):
             current_note.title = form.cleaned_data['title']
             current_note.notebook = form.cleaned_data['notebook']
             current_note.content = form.cleaned_data['content']
+            current_note.tags = form.cleaned_data['tags']
             current_note.save()
             return redirect('home')
 

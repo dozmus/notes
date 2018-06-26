@@ -14,6 +14,7 @@
         {% csrf_token %}
 
         <fieldset>
+            {{ form.media }}
             {% for field in form %}
                 <div class="pure-control-group">
                     {{ field.errors }}

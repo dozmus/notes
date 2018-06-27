@@ -204,6 +204,9 @@ a {
     border-radius: 4px;
     padding: 3px;
     margin-bottom: 4px;
+    -webkit-box-shadow: 1px 1px 5px 0 rgba(0,0,0,0.75);
+    -moz-box-shadow: 1px 1px 5px 0 rgba(0,0,0,0.75);
+    box-shadow: 1px 1px 5px 0 rgba(0,0,0,0.75);
 }
 
 /* Email Content Styles */

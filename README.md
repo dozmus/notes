@@ -36,10 +36,10 @@ python manage.py runserver 127.0.0.1:8000
 
 # Samples
 ## Light theme
-![Light theme](light-theme-sample.png)
+![Light theme](samples/light-theme-sample.png)
 
 ## Dark theme
-![Dark theme](dark-theme-sample.png)
+![Dark theme](samples/dark-theme-sample.png)
 
 ## Share links
-![Share links](share-links-sample.png)
+![Share links](samples/share-links-sample.png)

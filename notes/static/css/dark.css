@@ -34,11 +34,36 @@ a {
     margin: 1em 0;
 }
 .secondary-button {
-    background: rgb(140, 140, 140);
-    border: 1px solid rgb(180, 180, 180);
     color: rgb(220, 220, 220);
+    background: rgb(120, 120, 120);
+    border: 1px solid rgb(100, 100, 100);
     padding: 0.5em 2em;
     font-size: 80%;
+}
+
+/*
+ * -- HELPER STYLES --
+ * Over-riding some of the pure default styles to implement 'dark theme'
+ */
+.pure-form input[type=text],
+.pure-form textarea,
+.pure-form select {
+    background: rgb(120, 120, 120);
+    border: 1px solid rgb(100, 100, 100);
+    box-shadow: inset 0 1px 3px rgb(100, 100, 100);
+}
+
+.pure-button {
+    background-color: rgb(100, 100, 100);
+}
+
+.pure-table, .pure-table td, .pure-table th {
+    border: 1px solid rgb(100, 100, 100);
+}
+
+.pure-table thead {
+    color: rgb(220, 220, 220);
+    background: rgb(120, 120, 120);
 }
 
 /*

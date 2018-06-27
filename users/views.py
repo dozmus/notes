@@ -41,6 +41,11 @@ def login_view(request):
         if form.is_valid():
             data = form.clean()
             authed_user = authenticate(username=data['username'], password=data['password'])
+
+            # Create user profile if one does not exist (for users made through createsuperuser)
+            if not UserProfile.objects.filter(user=authed_user).exists():
+                UserProfile.objects.create(user=authed_user)
+
             login(request, authed_user)
             return redirect('home')
 

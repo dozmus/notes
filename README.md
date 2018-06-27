@@ -5,6 +5,7 @@ A minimal note-taking web application using Django 2.0.6 licensed under the MIT 
 
 # Features
 * Write notes using Markdown
+* Syntax highlighting with 18 themes to choose from
 * Organise notes using notebooks amd tags
 * Share links with custom permissions
 * Colour code notebooks
@@ -36,6 +37,9 @@ python manage.py runserver 127.0.0.1:8000
 # Samples
 ## Light theme
 ![Light theme](light-theme-sample.png)
+
+## Dark theme
+![Dark theme](dark-theme-sample.png)
 
 ## Share links
 ![Share links](share-links-sample.png)

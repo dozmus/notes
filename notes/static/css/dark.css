@@ -201,8 +201,8 @@ a {
 .note-tag {
     display: inline-block;
     background: #0b72c1;
-    border-radius: 5px;
-    padding: 2px;
+    border-radius: 4px;
+    padding: 3px;
     margin-bottom: 4px;
 }
 

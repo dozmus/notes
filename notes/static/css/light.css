@@ -175,8 +175,8 @@ a {
 .note-tag {
     display: inline-block;
     background: rgb(37, 42, 58);
-    border-radius: 5px;
-    padding: 2px;
+    border-radius: 4px;
+    padding: 3px;
     margin-bottom: 4px;
 }
 

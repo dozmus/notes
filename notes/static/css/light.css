@@ -204,6 +204,7 @@ a {
 }
 .email-content-controls .secondary-button {
     margin-bottom: 0.3em;
+    padding: 0.5em 1em;
 }
 .email-avatar {
     width: 40px;

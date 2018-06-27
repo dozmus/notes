@@ -1,4 +1,3 @@
-# Created by .ignore support plugin (hsz.mobi)
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -109,7 +108,10 @@ venv.bak/
 migrations/
 
 # Scripts
-migrate.bat
+*.bat
 
 # PyCharm files
 .idea/
+
+# collectstatic results
+/static/

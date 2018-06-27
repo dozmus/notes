@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'users',
     'share',
     # External libraries
-    'colorful'
+    'colorful',
+    'django_tagify',
 ]
 
 MIDDLEWARE = [

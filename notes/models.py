@@ -65,7 +65,7 @@ class TagsField(CharField):
 
 
 class Notebook(Model):
-    title = CharField(max_length=100)
+    title = CharField(max_length=200)
     colour = RGBColorField()
     owner = ForeignKey(User, on_delete=CASCADE)
 
@@ -77,10 +77,10 @@ class Notebook(Model):
 
 
 class Note(Model):
-    title = CharField(max_length=100)
-    content = TextField(max_length=1000)
+    title = CharField(max_length=250)
+    content = TextField(max_length=10000)
     notebook = ForeignKey(Notebook, on_delete=CASCADE)
-    tags = TagsField(max_length=100, blank=True)
+    tags = TagsField(max_length=200, blank=True)
 
     def tag_list(self, delimiter=','):
         return self.tags.split(delimiter) if len(self.tags) > 0 else []

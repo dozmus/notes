@@ -26,6 +26,7 @@ def edit_profile(request):
         form = UserProfileForm(data={
             'theme': profile.theme,
             'syntax_highlighting_style': profile.syntax_highlighting_style,
+            'compact_mode': profile.compact_mode,
         })
     else:
         form = UserProfileForm(data=request.POST)
@@ -33,6 +34,7 @@ def edit_profile(request):
         if form.is_valid():
             profile.theme = form.cleaned_data['theme']
             profile.syntax_highlighting_style = form.cleaned_data['syntax_highlighting_style']
+            profile.compact_mode = form.cleaned_data['compact_mode']
             profile.save()
             return redirect('home')
 

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Model, CharField, TextField, ForeignKey, CASCADE
 from django_tagify.fields import TagsField
 
+from notes.compact_mode import ON_OFF_CHOICES
 from notes.syntax_highlighting import SYNTAX_HIGHLIGHTING_CHOICES
 from notes.themes import THEME_CHOICES
 
@@ -39,4 +40,5 @@ class UserProfile(Model):
     syntax_highlighting_style = CharField(max_length=8, choices=SYNTAX_HIGHLIGHTING_CHOICES,
                                           default=SYNTAX_HIGHLIGHTING_CHOICES[0][1])
     theme = CharField(max_length=5, choices=THEME_CHOICES, default=THEME_CHOICES[0][1])
+    compact_mode = CharField(max_length=3, choices=ON_OFF_CHOICES, default='Off')
     user = ForeignKey(User, on_delete=CASCADE)

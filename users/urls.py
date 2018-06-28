@@ -22,5 +22,6 @@ app_name = 'users'
 urlpatterns = [
     url('login/', views.login_view, name='login'),
     url('logout/', views.logout_view, name='logout'),
-    url('register/', views.register_view, name='register')
+    url('register/', views.register_view, name='register'),
+    url('change-password/', views.change_password, name='change-password'),
 ]

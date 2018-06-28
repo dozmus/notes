@@ -49,6 +49,7 @@ urlpatterns = [
     # Notebook selection operations
     path(r'delete-notes/<note_ids>/', views.delete_notes, name='delete-notes'),
     path(r'move-notes/<note_ids>/', views.move_notes, name='move-notes'),
+    path(r'merge-notes/<note_ids>/', views.merge_notes, name='merge-notes'),
 
     # Search
     path('search-notes/', views.search, name='search-notes'),

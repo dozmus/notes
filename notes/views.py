@@ -183,6 +183,11 @@ def view_notebook(request, notebook_id):
                     return notes2pdfzip_response(valid_notes, 'notes-%s-partial' % current_notebook.title)
 
                 # Move
+                if 'merge' in request.POST:
+                    note_ids = ','.join([str(note.id) for note in valid_notes])
+                    return HttpResponseRedirect(reverse('merge-notes', kwargs={'note_ids': note_ids}))
+
+                # Move
                 if 'move' in request.POST:
                     note_ids = ','.join([str(note.id) for note in valid_notes])
                     return HttpResponseRedirect(reverse('move-notes', kwargs={'note_ids': note_ids}))
@@ -198,6 +203,49 @@ def view_notebook(request, notebook_id):
     context['notes'] = notes
     context['current_notebook'] = current_notebook
     return render(request, 'view_notebook.html', context)
+
+
+@login_required
+def merge_notes(request, note_ids):
+    # Validate notes
+    note_id_array = note_ids.split(',')
+    notes = validate_ownership_notes(request.user, note_id_array)
+
+    # Merge data
+    merged_contents = ''
+    merged_tags = ''
+
+    for note in notes:
+        merged_contents += note.content + '\r\n'
+        merged_tags += ',' + note.tags if merged_tags else note.tags
+
+    # Create form
+    if request.method != 'POST':
+        form = NoteForm(data={
+            'title': notes[0].title,
+            'content': merged_contents,
+            'notebook': notes[0].notebook,
+            'tags': merged_tags,
+        })
+        form.restrict_to_user(request.user)
+    else:
+        form = NoteForm(data=request.POST)
+
+        if form.is_valid():
+            # Delete old notes
+            for note in notes:
+                note.delete()
+
+            # Create new note
+            form.save()
+            return redirect('home')
+
+    # Render
+    context = regular_context(request.user)
+    context['notes'] = notes
+    context['form'] = form
+    context['current_note_ids'] = note_ids
+    return render(request, 'merge_notes.html', context)
 
 
 @login_required

@@ -6,14 +6,13 @@ A minimal note-taking web application using Django 2.0.6 licensed under the MIT 
 # Features
 * Write notes using Markdown
 * Syntax highlighting with 18 themes to choose from
-* Organise notes using notebooks and tags
+* Organise notes using notebooks which are colour-coded and tags
 * Share links with custom permissions
-* Colour code notebooks
+* Download notes and notebooks as TXT or PDFs
 * Search notes and notebooks
-* User accounts
-* Download notes as text files or PDFs
-* Download notebooks
 * Mass manage notes in notebooks
+* User accounts
+* RESTful API
 * Responsive design
 
 # Usage

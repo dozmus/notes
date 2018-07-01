@@ -41,9 +41,11 @@ INSTALLED_APPS = [
     'notes',
     'users',
     'share',
+    'api',
     # External libraries
     'colorful',
     'django_tagify',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

@@ -32,6 +32,9 @@ urlpatterns = [
     # Share
     path('share/', include('share.urls', namespace='share')),
 
+    # API
+    path('api/', include('api.urls', namespace='api')),
+
     # Notes
     path('new-note/', views.new_note, name='new-note'),
     path('view-note/<int:note_id>/', views.view_note, name='view-note'),

@@ -11,7 +11,7 @@ from notes.themes import THEME_CHOICES
 class Notebook(Model):
     title = CharField(max_length=200)
     colour = RGBColorField()
-    owner = ForeignKey(User, on_delete=CASCADE)
+    owner = ForeignKey(User, related_name='notebooks', on_delete=CASCADE)
 
     class Meta:
         verbose_name_plural = 'notebooks'
@@ -23,7 +23,7 @@ class Notebook(Model):
 class Note(Model):
     title = CharField(max_length=250)
     content = TextField(max_length=10000)
-    notebook = ForeignKey(Notebook, on_delete=CASCADE)
+    notebook = ForeignKey(Notebook, related_name='notes', on_delete=CASCADE)
     tags = TagsField(max_length=200, blank=True)
 
     def tag_list(self, delimiter=','):

@@ -29,11 +29,6 @@ python manage.py collectstatic
 python manage.py runserver 127.0.0.1:8000
 ```
 
-# Credits
-* HTML Styling done using [PureCSS](https://purecss.io/) and [PureCSS Email Layout](https://purecss.io/layouts/email/).
-* Syntax highlighting stylesheets from [pygments-css](https://github.com/richleland/pygments-css)
-* Tags input field constructed using [django-tagify](https://github.com/PureCS/django-tagify)
-
 # Samples
 ## Light theme
 ![Light theme](samples/light-theme-sample.png)
@@ -43,3 +38,8 @@ python manage.py runserver 127.0.0.1:8000
 
 ## Share links
 ![Share links](samples/share-links-sample.png)
+
+# Credits
+* HTML Styling done using [PureCSS](https://purecss.io/) and [PureCSS Email Layout](https://purecss.io/layouts/email/).
+* Syntax highlighting stylesheets from [pygments-css](https://github.com/richleland/pygments-css)
+* Tags input field constructed using [django-tagify](https://github.com/PureCS/django-tagify)

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'users',
     'share',
     'api',
+    'trash',
     # External libraries
     'colorful',
     'django_tagify',

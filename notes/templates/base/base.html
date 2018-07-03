@@ -34,6 +34,14 @@
                         <li class="pure-menu-item">
                             <a href="{% url 'new-note' %}" class="pure-menu-link">New Note</a>
                         </li>
+                        <li class="pure-menu-item">
+                            <a href="{% url 'trash:trash' %}" class="pure-menu-link">
+                                Trash
+                                {% if trash_count != None %}
+                                <span class="email-count">({{ trash_count }})</span>
+                                {% endif %}
+                            </a>
+                        </li>
 
                         {# User buttons #}
                         {% if not user.is_authenticated %}
@@ -78,6 +86,7 @@
                 </div>
                 {% endblock %}
 
+                {% block note_url_list %}
                 {% for n in notes %}
                     {% if n.id == current_note.id %}
                     <a href="{% url 'view-note' note_id=n.id %}" class="email-item email-item-selected pure-g"
@@ -110,6 +119,7 @@
                         </div>
                     </div>
                 {% endfor %}
+                {% endblock %}
             {% else %}
                 <div class="email-item pure-g">
                     <div class="pure-u">

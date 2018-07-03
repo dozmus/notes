@@ -12,6 +12,7 @@ A minimal note-taking web application using Django 2.0.6 licensed under the MIT 
 * Search notes and notebooks
 * Mass manage notes in notebooks
 * User accounts
+* Trash bin
 * RESTful API
 * Responsive design
 

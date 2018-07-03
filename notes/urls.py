@@ -54,6 +54,9 @@ urlpatterns = [
     path(r'move-notes/<note_ids>/', views.move_notes, name='move-notes'),
     path(r'merge-notes/<note_ids>/', views.merge_notes, name='merge-notes'),
 
+    # Trash bin
+    path('trash/', include('trash.urls', namespace='trash')),
+
     # Search
     path('search-notes/', views.search, name='search-notes'),
     path('search-notebook/<int:notebook_id>/', views.search_notebook, name='search-notebook'),

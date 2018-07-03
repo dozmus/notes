@@ -1,0 +1,27 @@
+{% extends 'base/trash.html' %}
+
+{% block title %}
+    Restore {{ current_note.title }}
+{% endblock %}
+
+{% block main_title %}
+    Restore {{ current_note.title }}
+{% endblock %}
+
+{% block body %}
+    <form class="pure-form pure-form-aligned"
+          action="{% url 'trash:restore-note' note_id=current_note.id %}" method="post">
+        {% csrf_token %}
+
+        <fieldset>
+            <p>
+                Are you sure you want to restore this note?
+            </p>
+
+            <div class="pure-controls">
+                <button type="submit" class="pure-button pure-button-primary">Restore</button>
+                <button type="button" class="pure-button pure-button-primary" onclick="window.history.back();">Cancel</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base/trash_note.html' %}
+
+{% block title %}
+    {{ current_note.title }}
+{% endblock %}
+
+{% block main_title %}
+    {{ current_note.title }}
+{% endblock %}
+
+{% block main_subtitle %}
+    {% if current_note.tag_list|length > 0 %}
+    <p class="note-tags">
+        {% for tag in current_note.tag_list %}
+            <span class="note-tag">{{ tag }}</span>
+        {% endfor %}
+    </p>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static syntax_highlighting_stylesheet %}">
+    {{ current_note.rendered_content|safe }}
+{% endblock %}

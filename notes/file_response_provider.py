@@ -29,14 +29,14 @@ def note2pdf_response(request: HttpRequest, note: Note) -> HttpResponse:
     return response
 
 
-def notebook2txtzip(notebook: Notebook) -> HttpResponse:
-    notes = Note.objects.filter(notebook_id=notebook.id).order_by('id')
+def notebook2txtzip(notebook: Notebook, trash: bool=False) -> HttpResponse:
+    notes = Note.objects.filter(notebook_id=notebook.id, trash=trash).order_by('id')
     filename = 'notebook-%s.zip' % notebook.title
     return notes2txtzip_response(notes, filename)
 
 
-def notebook2pdfzip(notebook: Notebook) -> HttpResponse:
-    notes = Note.objects.filter(notebook_id=notebook.id).order_by('id')
+def notebook2pdfzip(notebook: Notebook, trash: bool=False) -> HttpResponse:
+    notes = Note.objects.filter(notebook_id=notebook.id, trash=trash).order_by('id')
     filename = 'notebook-%s.zip' % notebook.title
     return notes2pdfzip_response(notes, filename)
 

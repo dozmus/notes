@@ -1,6 +1,6 @@
 from colorful.fields import RGBColorField
 from django.contrib.auth.models import User
-from django.db.models import Model, CharField, TextField, ForeignKey, CASCADE
+from django.db.models import Model, CharField, TextField, ForeignKey, CASCADE, BooleanField
 from django_tagify.fields import TagsField
 
 from notes.compact_mode import ON_OFF_CHOICES
@@ -24,6 +24,7 @@ class Note(Model):
     title = CharField(max_length=250)
     content = TextField(max_length=10000)
     notebook = ForeignKey(Notebook, related_name='notes', on_delete=CASCADE)
+    trash = BooleanField(default=False)
     tags = TagsField(max_length=200, blank=True)
 
     def tag_list(self, delimiter=','):

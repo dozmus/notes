@@ -1,0 +1,27 @@
+{% extends 'base/trash.html' %}
+
+{% block title %}
+    Restore All Notes
+{% endblock %}
+
+{% block main_title %}
+    Restore All Notes
+{% endblock %}
+
+{% block body %}
+    <form class="pure-form pure-form-aligned"
+          action="{% url 'trash:restore-all' %}" method="post">
+        {% csrf_token %}
+
+        <fieldset>
+            <p>
+                Are you sure you want to restore all notes? You can see the full list on the left.
+            </p>
+
+            <div class="pure-controls">
+                <button type="submit" class="pure-button pure-button-primary">Restore</button>
+                <button type="button" class="pure-button pure-button-primary" onclick="window.history.back();">Cancel</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

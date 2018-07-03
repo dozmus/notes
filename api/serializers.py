@@ -9,7 +9,7 @@ from notes.models import Note, Notebook
 class NoteSerializer(ModelSerializer):
     class Meta:
         model = Note
-        fields = ('id', 'title', 'content', 'notebook', 'tags', )
+        fields = ('id', 'title', 'content', 'notebook', 'trash', 'tags', )
 
 
 class NotebookSerializer(ModelSerializer):

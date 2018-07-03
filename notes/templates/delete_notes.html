@@ -13,7 +13,10 @@
         {% csrf_token %}
 
         <fieldset>
-            <p>Are you sure you want to delete these notes? You can see the full list on the left.</p>
+            <p>
+                Are you sure you want to delete these notes? You can see the full list on the left.
+                You can restore them from your <a href="{% url 'trash:trash' %}">trash bin</a> later.
+            </p>
 
             <div class="pure-controls">
                 <button type="submit" class="pure-button pure-button-primary">Delete</button>

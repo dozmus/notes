@@ -1,0 +1,51 @@
+{% extends 'base/base.html' %}
+
+{% block note_url_list %}
+    {% for n in notes %}
+        {% if n.id == current_note.id %}
+        <a href="{% url 'trash:view-note' note_id=n.id %}" class="email-item email-item-selected pure-g"
+                style="border-left: 6px solid {{ n.notebook.colour }}">
+        {% else %}
+        <a href="{% url 'trash:view-note' note_id=n.id %}" class="email-item pure-g"
+                style="border-left: 6px solid {{ n.notebook.colour }}">
+        {% endif %}
+            <div class="pure-u">
+                <h5 class="email-name">{{ n.notebook.title }}</h5>
+                <h4 class="email-subject">{{ n.title|truncatechars:50 }}</h4>
+                {% if compact_mode == 'Off' %}
+                    <p class="email-desc">
+                        {{ n.content|truncatechars:100 }}
+                    </p>
+                    {% if n.tag_list|length > 0 %}
+                    <p class="note-tags">
+                        {% for tag in n.tag_list %}
+                            <span class="note-tag">{{ tag }}</span>
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </a>
+    {% empty %}
+        <div class="email-item pure-g">
+            <div class="pure-u">
+                <h5 class="email-name">You have no notes.</h5>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block search %}
+    <div class="email-item email-item-selected pure-g">
+        <form class="pure-form pure-u search-bar-container"
+              action="{% url 'trash:search' %}" method="post">
+            {% csrf_token %}
+            <fieldset>
+                <button type="submit" class="pure-button search-button"><i class="fa fa-search"></i></button>
+                <span class="search-bar">
+                    <input type="text" class="full-width" placeholder="Search..." name="query" id="id_query">
+                </span>
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}

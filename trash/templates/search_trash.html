@@ -1,0 +1,27 @@
+{% extends 'base/trash.html' %}
+
+{% block title %}
+    Search Trash "{{ query }}"
+{% endblock %}
+
+{% block main_title %}
+    Search Trash "{{ query }}"
+{% endblock %}
+
+{% block search %}
+    <div class="email-item email-item-selected pure-g">
+        <form class="pure-form" action="{% url 'trash:search' %}" method="post">
+            {% csrf_token %}
+            <fieldset>
+                <input type="text" placeholder="Search..." name="query" id="id_query">
+                <button type="submit" class="pure-button"><i class="fa fa-search"></i></button>
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <p>
+        You are now only seeing notes in the trash which match your search query of "{{ query }}".
+    </p>
+{% endblock %}

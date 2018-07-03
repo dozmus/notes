@@ -18,12 +18,12 @@ def notebooks(user: User) -> QuerySet:
         return QuerySet()
 
 
-def notes(user: User) -> QuerySet:
+def notes(user: User, trash: bool=False) -> QuerySet:
     """
     Returns all note belonging to the argument user if they are authenticated, otherwise it returns an empty QuerySet.
     """
     if user.is_authenticated:
-        return Note.objects.filter(notebook__owner=user).order_by('id')
+        return Note.objects.filter(notebook__owner=user, trash=trash).order_by('id')
     else:
         return QuerySet()
 
@@ -40,6 +40,25 @@ def search_notes(user: User, query: str, notebook: Notebook=None) -> List[Note]:
         if notebook is not None:
             owners_notes = owners_notes.filter(notebook_id=notebook.id)
         owners_notes = owners_notes.order_by('id')
+
+        # Compute results
+        results = []
+
+        for note in owners_notes:
+            if query in note.title or query in note.content or query in note.tag_list():
+                results.append(note)
+        return results
+    else:
+        return []
+
+
+def search_notes_trash(user: User, query: str) -> List[Note]:
+    """
+    Returns all note belonging to the argument user if they are authenticated, otherwise it returns an empty QuerySet.
+    The notes it returns are those whose title, content, or tags contains the search query, which are in the trash.
+    """
+    if user.is_authenticated:
+        owners_notes = Note.objects.filter(notebook__owner=user, trash=True).order_by('id')
 
         # Compute results
         results = []

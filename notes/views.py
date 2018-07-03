@@ -91,7 +91,6 @@ def view_note(request, note_id):
 
     context = regular_context(request.user)
     context['current_note'] = current_note
-    # current_note.tag_list = current_note.tags.split(',') if len(current_note.tags) > 0 else []
     return render(request, 'view_note.html', context)
 
 
@@ -144,7 +143,8 @@ def delete_notes(request, note_ids):
 
     if request.method == 'POST':
         for note in notes:
-            note.delete()
+            note.trash = True
+            note.save()
         return redirect('home')
 
     # Render
@@ -160,7 +160,7 @@ def view_notebook(request, notebook_id):
     current_notebook = validate_ownership_notebook(request.user, notebook_id)
 
     # Create form
-    notes = Note.objects.filter(notebook_id=notebook_id).order_by('id')
+    notes = Note.objects.filter(notebook_id=notebook_id, trash=False).order_by('id')
 
     if request.method != 'POST':
         form = SelectNotesForm()
@@ -286,7 +286,8 @@ def delete_note(request, note_id):
     current_note = validate_ownership_note(request.user, note_id)
 
     if request.method == 'POST':
-        current_note.delete()
+        current_note.trash = True
+        current_note.save()
         return redirect('home')
 
     # Render

@@ -271,7 +271,7 @@ def edit_note(request, note_id):
             current_note.content = form.cleaned_data['content']
             current_note.tags = form.cleaned_data['tags']
             current_note.save()
-            return redirect('home')
+            return HttpResponseRedirect(reverse('view-note', kwargs={'note_id': note_id}))
 
     # Render
     context = regular_context(request.user)

@@ -2,7 +2,7 @@ import random
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.timezone import utc
@@ -131,7 +131,7 @@ def edit_shared_note(request, note_id, code):
             note.content = form.cleaned_data['content']
             note.tags = form.cleaned_data['tags']
             note.save()
-            return redirect('home')
+            return HttpResponseRedirect(reverse('share:view-note', kwargs={'note_id': note_id, 'code': code}))
 
     # Render
     context = regular_context(request.user)

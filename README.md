@@ -6,7 +6,7 @@ A minimal note-taking web application using Django 2.0.6 licensed under the MIT 
 # Features
 * Write notes using Markdown
 * Syntax highlighting with 18 themes to choose from
-* Organise notes using notebooks which are colour-coded and tags
+* Organise notes using colour-coded notebooks and tags
 * Share links with custom permissions
 * Download notes and notebooks as TXT or PDFs
 * Search notes and notebooks
@@ -23,6 +23,10 @@ python manage.py makemigrations
 python manage.py migrate
 python manage.py collectstatic
 ```
+
+You will also need
+[Microsoft Visual C++ 14.0](https://wiki.python.org/moin/WindowsCompilers#Compilers_Installation_and_configuration)
+due to the dependency on reportlab.
 
 ## Run
 ```

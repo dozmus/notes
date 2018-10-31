@@ -143,15 +143,16 @@ def edit_shared_note(request, note_id, code):
 
 def delete_shared_note(request, note_id, code):
     # Validate note
-    note, sharable_link = validate_ownership_shared_note(request, note_id, code)
+    current_note, sharable_link = validate_ownership_shared_note(request, note_id, code)
 
     if request.method == 'POST' and sharable_link.permissions == 'read+write':
-        note.delete()
+        current_note.trash = True
+        current_note.save()
         return redirect('home')
 
     # Render
     context = regular_context(request.user)
-    context['current_note'] = note
+    context['current_note'] = current_note
     context['code'] = code
     return render(request, 'delete_shared_note.html', context)
 
@@ -186,7 +187,7 @@ def view_shared_note(request, note_id, code):
 def validate_ownership_shared_note(request, note_id, code, check_expiry_date=True):
     # Get sharable link and note
     try:
-        note = Note.objects.filter(id=note_id).get()
+        note = Note.objects.filter(id=note_id, trash=False).get()
         sharable_link = SharableLink.objects.filter(note_id=note_id).filter(code=code).get()
     except:
         raise Http404('Note does not exist.')

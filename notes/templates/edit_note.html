@@ -9,7 +9,8 @@
 {% endblock %}
 
 {% block body %}
-    <form class="pure-form pure-form-aligned" action="{% url 'edit-note' note_id=current_note.id %}" method="post">
+    <form class="pure-form pure-form-aligned"
+          action="{% block edit_action %}{% url 'edit-note' note_id=current_note.id %}{% endblock %}" method="post">
         {% csrf_token %}
 
         <fieldset>

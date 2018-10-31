@@ -1,22 +1,4 @@
-{% extends 'base/note.html' %}
-
-{% block title %}
-    {{ current_note.title }}
-{% endblock %}
-
-{% block main_title %}
-    {{ current_note.title }}
-{% endblock %}
-
-{% block main_subtitle %}
-    {% if current_note.tag_list|length > 0 %}
-    <p class="note-tags">
-        {% for tag in current_note.tag_list %}
-            <span class="note-tag">{{ tag }}</span>
-        {% endfor %}
-    </p>
-    {% endif %}
-{% endblock %}
+{% extends 'view_note.html' %}
 
 {% block main_buttons %}
     <a href="{% url 'share:download-note' note_id=current_note.id filetype='txt' code=code %}">
@@ -33,10 +15,4 @@
         <button class="secondary-button pure-button">Delete</button>
     </a>
     {% endif %}
-{% endblock %}
-
-{% block body %}
-    {% load static %}
-    <link rel="stylesheet" href="{% static syntax_highlighting_stylesheet %}">
-    {{ current_note.rendered_content|safe }}
 {% endblock %}

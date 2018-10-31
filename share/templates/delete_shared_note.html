@@ -1,25 +1,9 @@
-{% extends 'base/note.html' %}
+{% extends 'delete_note.html' %}
 
-{% block title %}
-    Delete "{{ current_note.title }}"
+{% block delete_action %}
+{% url 'share:delete-note' note_id=current_note.id code=code %}
 {% endblock %}
 
-{% block main_title %}
-    Delete "{{ current_note.title }}"
-{% endblock %}
-
-{% block body %}
-    <form class="pure-form pure-form-aligned" action="{% url 'share:delete-note' note_id=current_note.id code=code %}"
-          method="post">
-        {% csrf_token %}
-
-        <fieldset>
-            <p>Are you sure you want to delete this note?</p>
-
-            <div class="pure-controls">
-                <button type="submit" class="pure-button pure-button-primary">Delete</button>
-                <button type="button" class="pure-button pure-button-primary" onclick="window.history.back();">Cancel</button>
-            </div>
-        </fieldset>
-    </form>
+{% block restore_message %}
+The note's owner can restore it from their <a href="{% url 'trash:trash' %}">trash bin</a> later.
 {% endblock %}

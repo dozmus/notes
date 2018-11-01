@@ -3,17 +3,17 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from notes.doa import validate_ownership_notes, validate_ownership_note, search_notes, search_notes_trash
+from notes.doa import validate_ownership_notes, validate_ownership_note
 from notes.file_response_provider import notes2txtzip_response, notes2pdfzip_response, render_markdown
-from notes.forms import SelectNotesForm, NoteForm
-from notes.models import Note
+from notes.forms import SelectNotesForm
+from notes.models import TrashNote, Note
 from notes.user_profiles import regular_context, trash_context
 
 
 @login_required
 def trash(request):
     # Create form
-    notes = Note.objects.filter(notebook__owner=request.user, trash=True).order_by('id')
+    notes = TrashNote.objects.for_user(request.user)
 
     if request.method != 'POST':
         form = SelectNotesForm()
@@ -25,6 +25,7 @@ def trash(request):
         if form.is_valid():
             # Collect valid nodes
             valid_notes = validate_ownership_notes(request.user, form.cleaned_data['picked'])
+            note_ids = ','.join([str(note.id) for note in valid_notes])
 
             if len(valid_notes) > 0:
                 # Download
@@ -37,12 +38,10 @@ def trash(request):
 
                 # Move
                 if 'restore' in request.POST:
-                    note_ids = ','.join([str(note.id) for note in valid_notes])
                     return HttpResponseRedirect(reverse('trash:restore-notes', kwargs={'note_ids': note_ids}))
 
                 # Delete
                 if 'delete' in request.POST:
-                    note_ids = ','.join([str(note.id) for note in valid_notes])
                     return HttpResponseRedirect(reverse('trash:permanent-delete-notes', kwargs={'note_ids': note_ids}))
 
     # Render
@@ -72,8 +71,7 @@ def delete_notes(request, note_ids):
     notes = validate_ownership_notes(request.user, note_id_array)
 
     if request.method == 'POST':
-        for note in notes:
-            note.delete()
+        Note.delete_all(notes)
         return redirect('trash:trash')
 
     # Render
@@ -100,11 +98,10 @@ def delete_note(request, note_id):
 
 @login_required
 def delete_all_notes(request):
-    notes = Note.objects.filter(notebook__owner=request.user, trash=True)
+    notes = TrashNote.objects.for_user(request.user)
 
     if request.method == 'POST':
-        for note in notes:
-            note.delete()
+        Note.delete_all(notes)
         return redirect('trash:trash')
 
     # Render
@@ -137,9 +134,7 @@ def restore_notes(request, note_ids):
     notes = validate_ownership_notes(request.user, note_id_array)
 
     if request.method == 'POST':
-        for note in notes:
-            note.trash = False
-            note.save()
+        Note.untrash_all(notes)
         return redirect('trash:trash')
 
     # Render
@@ -151,12 +146,10 @@ def restore_notes(request, note_ids):
 
 @login_required
 def restore_all_notes(request):
-    notes = Note.objects.filter(notebook__owner=request.user, trash=True)
+    notes = TrashNote.objects.for_user(request.user)
 
     if request.method == 'POST':
-        for note in notes:
-            note.trash = False
-            note.save()
+        Note.untrash_all(notes)
         return redirect('trash:trash')
 
     # Render
@@ -168,7 +161,7 @@ def restore_all_notes(request):
 
 @login_required
 def download_trash(request, filetype):
-    notes = Note.objects.filter(notebook__owner=request.user, trash=True)
+    notes = TrashNote.objects.for_user(request.user)
 
     # Return file
     if filetype == 'txt':
@@ -189,5 +182,5 @@ def search(request):
 
     context = regular_context(request.user)
     context['query'] = query
-    context['notes'] = search_notes_trash(request.user, query)
+    context['notes'] = TrashNote.objects.search(request.user, query)
     return render(request, 'search_trash.html', context)

@@ -4,11 +4,10 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from notes.doa import validate_ownership_notebook, validate_ownership_note, validate_ownership_notes
-from notes.file_response_provider import note2txt_response, note2pdf_response, render_markdown, notebook2txtzip, \
-    notebook2pdfzip, notes2pdfzip_response, notes2txtzip_response
+from notes.file_response_provider import note2txt_response, note2pdf_response, render_markdown, notebook2txtzip_response, \
+    notebook2pdfzip_response, notes2pdfzip_response, notes2txtzip_response
 from .models import Note, UserProfile
 from .forms import NoteForm, NotebookForm, SelectNotesForm, SelectNotebookForm, UserProfileForm
-from .doa import search_notes
 from .user_profiles import regular_context
 
 
@@ -31,11 +30,7 @@ def edit_profile(request):
     else:
         form = UserProfileForm(data=request.POST)
 
-        if form.is_valid():
-            profile.theme = form.cleaned_data['theme']
-            profile.syntax_highlighting_style = form.cleaned_data['syntax_highlighting_style']
-            profile.compact_mode = form.cleaned_data['compact_mode']
-            profile.save()
+        if form.update(profile):
             return redirect('home')
 
     # Render
@@ -51,10 +46,7 @@ def new_notebook(request):
     else:
         form = NotebookForm(data=request.POST)
 
-        if form.is_valid():
-            notebook = form.save(commit=False)
-            notebook.owner = request.user
-            notebook.save()
+        if form.create(request.user):
             return redirect('home')
 
     # Render
@@ -70,9 +62,9 @@ def new_note(request):
         form.restrict_to_user(request.user)
     else:
         form = NoteForm(data=request.POST)
+        form.restrict_to_user(request.user)
 
-        if form.is_valid():
-            form.save()
+        if form.create():
             return redirect('home')
 
     # Render
@@ -121,10 +113,7 @@ def move_notes(request, note_ids):
     else:
         form = SelectNotebookForm(data=request.POST)
 
-        if form.is_valid():
-            for note in notes:
-                note.notebook = form.cleaned_data['notebook']
-                note.save()
+        if form.move(notes):
             return redirect('home')
 
     # Render
@@ -142,9 +131,7 @@ def delete_notes(request, note_ids):
     notes = validate_ownership_notes(request.user, note_id_array)
 
     if request.method == 'POST':
-        for note in notes:
-            note.trash = True
-            note.save()
+        Note.trash_all(notes)
         return redirect('home')
 
     # Render
@@ -172,6 +159,7 @@ def view_notebook(request, notebook_id):
         if form.is_valid():
             # Collect valid nodes
             valid_notes = validate_ownership_notes(request.user, form.cleaned_data['picked'])
+            note_ids = ','.join([str(note.id) for note in valid_notes])
 
             if len(valid_notes) > 0:
                 # Download
@@ -184,17 +172,14 @@ def view_notebook(request, notebook_id):
 
                 # Move
                 if 'merge' in request.POST:
-                    note_ids = ','.join([str(note.id) for note in valid_notes])
                     return HttpResponseRedirect(reverse('merge-notes', kwargs={'note_ids': note_ids}))
 
                 # Move
                 if 'move' in request.POST:
-                    note_ids = ','.join([str(note.id) for note in valid_notes])
                     return HttpResponseRedirect(reverse('move-notes', kwargs={'note_ids': note_ids}))
 
                 # Delete
                 if 'delete' in request.POST:
-                    note_ids = ','.join([str(note.id) for note in valid_notes])
                     return HttpResponseRedirect(reverse('delete-notes', kwargs={'note_ids': note_ids}))
 
     # Render
@@ -231,13 +216,8 @@ def merge_notes(request, note_ids):
     else:
         form = NoteForm(data=request.POST)
 
-        if form.is_valid():
-            # Delete old notes
-            for note in notes:
-                note.delete()
-
-            # Create new note
-            form.save()
+        if form.create():
+            Note.delete_all(notes)
             return redirect('home')
 
     # Render
@@ -264,13 +244,9 @@ def edit_note(request, note_id):
         form.restrict_to_user(request.user)
     else:
         form = NoteForm(data=request.POST)
+        form.restrict_to_user(request.user)
 
-        if form.is_valid():
-            current_note.title = form.cleaned_data['title']
-            current_note.notebook = form.cleaned_data['notebook']
-            current_note.content = form.cleaned_data['content']
-            current_note.tags = form.cleaned_data['tags']
-            current_note.save()
+        if form.update(current_note):
             return HttpResponseRedirect(reverse('view-note', kwargs={'note_id': note_id}))
 
     # Render
@@ -310,10 +286,7 @@ def edit_notebook(request, notebook_id):
     else:
         form = NotebookForm(data=request.POST)
 
-        if form.is_valid():
-            current_notebook.title = form.cleaned_data['title']
-            current_notebook.colour = form.cleaned_data['colour']
-            current_notebook.save()
+        if form.update(current_notebook):
             return redirect('home')
 
     # Render
@@ -345,9 +318,9 @@ def download_notebook(request, notebook_id, filetype):
 
     # Return file
     if filetype == 'txt':
-        return notebook2txtzip(current_notebook)
+        return notebook2txtzip_response(current_notebook)
     elif filetype == 'pdf':
-        return notebook2pdfzip(current_notebook)
+        return notebook2pdfzip_response(current_notebook)
     else:
         raise Http404('Invalid filetype.')
 
@@ -362,7 +335,7 @@ def search(request):
 
     context = regular_context(request.user)
     context['query'] = query
-    context['notes'] = search_notes(request.user, query)
+    context['notes'] = Note.objects.search(request.user, query)
     return render(request, 'search.html', context)
 
 
@@ -379,6 +352,6 @@ def search_notebook(request, notebook_id):
 
     context = regular_context(request.user)
     context['query'] = query
-    context['notes'] = search_notes(request.user, query, current_notebook),
+    context['notes'] = Note.objects.search(request.user, query, current_notebook)
     context['current_notebook'] = current_notebook
     return render(request, 'search_notebook.html', context)

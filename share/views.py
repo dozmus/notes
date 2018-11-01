@@ -7,9 +7,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.timezone import utc
 
-from notes.doa import notebooks, notes, validate_ownership_note
+from notes.doa import validate_ownership_note
 from notes.file_response_provider import render_markdown, note2txt_response, note2pdf_response
-from notes.models import UserProfile, Note
+from notes.models import Note
 from notes.user_profiles import regular_context
 from share.forms import SharableLinkForm, EditSharableLinkForm, SharedNoteForm
 from share.models import SharableLink
@@ -55,10 +55,7 @@ def new_share_link(request, note_id):
     else:
         form = SharableLinkForm(data=request.POST)
 
-        if form.is_valid():
-            SharableLink.objects.create(note_id=note_id, code=form.cleaned_data['code'],
-                                        permissions=form.cleaned_data['permissions'],
-                                        expiry_date=form.cleaned_data['expiry_date'])
+        if form.create(note_id):
             return redirect('home')
 
     # Render
@@ -82,10 +79,7 @@ def edit_share_link(request, note_id, code):
     else:
         form = EditSharableLinkForm(data=request.POST)
 
-        if form.is_valid():
-            link.permissions = form.cleaned_data['permissions']
-            link.expiry_date = form.cleaned_data['expiry_date']
-            link.save()
+        if form.update(link):
             return redirect('home')
 
     # Render
@@ -126,11 +120,7 @@ def edit_shared_note(request, note_id, code):
     else:
         form = SharedNoteForm(data=request.POST)
 
-        if form.is_valid() and sharable_link.permissions == 'read+write':
-            note.title = form.cleaned_data['title']
-            note.content = form.cleaned_data['content']
-            note.tags = form.cleaned_data['tags']
-            note.save()
+        if form.update(note, sharable_link):
             return HttpResponseRedirect(reverse('share:view-note', kwargs={'note_id': note_id, 'code': code}))
 
     # Render

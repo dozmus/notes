@@ -2,8 +2,7 @@ from typing import Dict
 
 from django.contrib.auth.models import User
 
-from notes.doa import notebooks, notes
-from notes.models import UserProfile, Note
+from notes.models import UserProfile, Note, Notebook, TrashNote
 from notes.syntax_highlighting import syntax_highlighting_stylesheet_link
 from notes.themes import stylesheet_url
 
@@ -22,7 +21,7 @@ def styled_context(user: User) -> Dict:
     theme = profile.theme
     syntax_highlighting_style = profile.syntax_highlighting_style
     compact_mode = profile.compact_mode
-    trash_count = Note.objects.filter(notebook__owner=user, trash=True).count()
+    trash_count = TrashNote.objects.for_user(user).count()
 
     return {
         'compact_mode': compact_mode,
@@ -36,8 +35,8 @@ def regular_context(user: User) -> Dict:
     context = styled_context(user)
 
     if user.is_authenticated:
-        context['notebooks'] = notebooks(user)
-        context['notes'] = notes(user)
+        context['notebooks'] = Notebook.objects.for_user(user)
+        context['notes'] = Note.objects.for_user(user).filter(trash=False)
     return context
 
 
@@ -45,6 +44,6 @@ def trash_context(user: User) -> Dict:
     context = styled_context(user)
 
     if user.is_authenticated:
-        context['notebooks'] = notebooks(user)
-        context['notes'] = notes(user, True)
+        context['notebooks'] = Notebook.objects.for_user(user)
+        context['notes'] = TrashNote.objects.for_user(user)
     return context

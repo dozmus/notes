@@ -1,17 +1,34 @@
 from django.forms import ModelForm
-from django.forms.utils import ErrorList
 
 from notes.models import Note
 from share.models import SharableLink
 
 
 class SharedNoteForm(ModelForm):
+    def update(self, note, sharable_link):
+        if self.is_valid() and sharable_link.permissions == 'read+write':
+            note.title = self.cleaned_data['title']
+            note.content = self.cleaned_data['content']
+            note.tags = self.cleaned_data['tags']
+            note.save()
+            return True
+        return False
+
     class Meta:
         model = Note
         fields = ['title', 'content', 'tags']
 
 
 class SharableLinkForm(ModelForm):
+    def create(self, note_id):
+        if self.is_valid():
+            SharableLink.objects.create(note_id=note_id,
+                                        code=self.cleaned_data['code'],
+                                        permissions=self.cleaned_data['permissions'],
+                                        expiry_date=self.cleaned_data['expiry_date'])
+            return True
+        return False
+
     def set_code(self, code):
         self.fields['code'].widget.attrs['value'] = code
         self.fields['code'].widget.attrs['readonly'] = True
@@ -22,6 +39,14 @@ class SharableLinkForm(ModelForm):
 
 
 class EditSharableLinkForm(ModelForm):
+    def update(self, link):
+        if self.is_valid():
+            link.permissions = self.cleaned_data['permissions']
+            link.expiry_date = self.cleaned_data['expiry_date']
+            link.save()
+            return True
+        return False
+
     class Meta:
         model = SharableLink
         fields = ['permissions', 'expiry_date']

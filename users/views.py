@@ -1,11 +1,9 @@
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from django.contrib.auth import logout
 
-from notes.models import UserProfile
 from notes.user_profiles import regular_context
+from users.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 
 
 @login_required
@@ -20,11 +18,7 @@ def register_view(request):
     else:
         form = UserCreationForm(data=request.POST)
 
-        if form.is_valid():
-            new_user = form.save()
-            UserProfile.objects.create(user=new_user)
-            authed_user = authenticate(username=new_user.username, password=request.POST['password1'])
-            login(request, authed_user)
+        if form.create(request):
             return redirect('home')
 
     # Render
@@ -39,15 +33,7 @@ def login_view(request):
     else:
         form = AuthenticationForm(data=request.POST)
 
-        if form.is_valid():
-            data = form.clean()
-            authed_user = authenticate(username=data['username'], password=data['password'])
-
-            # Create user profile if one does not exist (for users made through createsuperuser)
-            if not UserProfile.objects.filter(user=authed_user).exists():
-                UserProfile.objects.create(user=authed_user)
-
-            login(request, authed_user)
+        if form.login(request):
             return redirect('home')
 
     # Render
@@ -64,9 +50,7 @@ def change_password(request):
     else:
         form = PasswordChangeForm(request.user, request.POST)
 
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)
+        if form.update(request):
             return redirect('home')
 
     # Render

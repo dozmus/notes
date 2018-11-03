@@ -1,7 +1,7 @@
 notes
 ========
 
-A minimal note-taking web application using Django 2.0.6 licensed under the MIT License.
+A minimal note-taking web application using Django 2.1.3 licensed under the MIT License.
 
 # Features
 * Write notes using Markdown

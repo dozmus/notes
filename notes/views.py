@@ -31,7 +31,7 @@ def edit_profile(request):
         form = UserProfileForm(data=request.POST)
 
         if form.update(profile):
-            return redirect('home')
+            return redirect('edit-profile')
 
     # Render
     context = regular_context(request.user)

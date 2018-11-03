@@ -56,7 +56,7 @@ def new_share_link(request, note_id):
         form = SharableLinkForm(data=request.POST)
 
         if form.create(note_id):
-            return redirect('home')
+            return HttpResponseRedirect(reverse('share:share-note', kwargs={'note_id': note_id}))
 
     # Render
     context = regular_context(request.user)
@@ -80,7 +80,7 @@ def edit_share_link(request, note_id, code):
         form = EditSharableLinkForm(data=request.POST)
 
         if form.update(link):
-            return redirect('home')
+            return HttpResponseRedirect(reverse('share:share-note', kwargs={'note_id': note_id}))
 
     # Render
     context = regular_context(request.user)
@@ -97,7 +97,7 @@ def delete_share_link(request, note_id, code):
 
     if request.method == 'POST':
         sharable_link.delete()
-        return redirect('home')
+        return HttpResponseRedirect(reverse('share:share-note', kwargs={'note_id': note_id}))
 
     # Render
     context = regular_context(request.user)

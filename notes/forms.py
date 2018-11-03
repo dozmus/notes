@@ -1,5 +1,8 @@
+import re
+
 from django.forms import ModelForm, Form, MultipleChoiceField, CheckboxSelectMultiple
 
+from notes.task_lists import compute_task_counts
 from .models import Note, Notebook, UserProfile
 
 
@@ -28,13 +31,12 @@ class NotebookForm(ModelForm):
 class NoteForm(ModelForm):
     def create(self):
         if self.is_valid():
-            self.save()
-            return True
-        return False
+            note = self.save(commit=False)
 
-    def update(self):
-        if self.is_valid():
-            self.save()
+            complete_tasks, total_tasks = compute_task_counts(note.content)
+            note.complete_tasks = complete_tasks
+            note.total_tasks = total_tasks
+            note.save()
             return True
         return False
 
@@ -44,6 +46,10 @@ class NoteForm(ModelForm):
             note.notebook = self.cleaned_data['notebook']
             note.content = self.cleaned_data['content']
             note.tags = self.cleaned_data['tags']
+
+            complete_tasks, total_tasks = compute_task_counts(note.content)
+            note.complete_tasks = complete_tasks
+            note.total_tasks = total_tasks
             note.save()
             return True
         return False

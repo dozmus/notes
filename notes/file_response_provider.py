@@ -110,4 +110,4 @@ def render_markdown(raw: str) -> str:
     Returns the argument raw markdown as its equivalent HTML, with the 'fenced-code-blocks' option.
     :param raw: raw markdown
     """
-    return Markdown(extras=['fenced-code-blocks']).convert(raw)
+    return Markdown(extras=['fenced-code-blocks', 'task_list']).convert(raw)

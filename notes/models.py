@@ -1,6 +1,7 @@
 from colorful.fields import RGBColorField
 from django.contrib.auth.models import User
-from django.db.models import Model, CharField, TextField, ForeignKey, CASCADE, BooleanField, Manager, QuerySet
+from django.db.models import Model, CharField, TextField, ForeignKey, CASCADE, BooleanField, Manager, QuerySet, \
+    IntegerField
 from django_tagify.fields import TagsField
 
 from notes.compact_mode import ON_OFF_CHOICES
@@ -86,6 +87,8 @@ class Note(Model):
     notebook = ForeignKey(Notebook, related_name='notes', on_delete=CASCADE)
     trash = BooleanField(default=False)
     tags = TagsField(max_length=200, blank=True)
+    complete_tasks = IntegerField(default=0)
+    total_tasks = IntegerField(default=0)
 
     @classmethod
     def delete_all(cls, notes):
@@ -103,6 +106,13 @@ class Note(Model):
         for note in notes:
             note.trash = False
             note.save()
+
+    def complete_tasks_percent(self):
+        if self.total_tasks == 0:
+            return 0
+        else:
+            percent = int(round(self.complete_tasks * 100 / self.total_tasks))
+            return min(100, max(percent, 0))
 
     def tag_list(self, delimiter=','):
         return self.tags.split(delimiter) if len(self.tags) > 0 else []

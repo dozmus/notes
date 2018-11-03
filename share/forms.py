@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 
 from notes.models import Note
+from notes.task_lists import compute_task_counts
 from share.models import SharableLink
 
 
@@ -10,6 +11,10 @@ class SharedNoteForm(ModelForm):
             note.title = self.cleaned_data['title']
             note.content = self.cleaned_data['content']
             note.tags = self.cleaned_data['tags']
+
+            complete_tasks, total_tasks = compute_task_counts(note.content)
+            note.complete_tasks = complete_tasks
+            note.total_tasks = total_tasks
             note.save()
             return True
         return False

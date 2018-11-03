@@ -24,7 +24,7 @@ python manage.py migrate
 python manage.py collectstatic
 ```
 
-You will also need
+Windows Users: You will also need
 [Microsoft Visual C++ 14.0](https://wiki.python.org/moin/WindowsCompilers#Compilers_Installation_and_configuration)
 due to the dependency on reportlab.
 
